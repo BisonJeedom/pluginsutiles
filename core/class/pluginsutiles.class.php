@@ -184,6 +184,7 @@ class pluginsutiles extends eqLogic {
     }
 
     log::add(__CLASS__, 'info', 'Recherche terminée parmis ' . $nb_plugins . ' plugins : ' . $nb_found . ' plugins trouvé(s) et correspondant aux mots clefs');
+    return $array_historique;
   }
 
   public function refreshFromMarket() {
@@ -393,6 +394,12 @@ class pluginsutiles extends eqLogic {
 
   // Fonction exécutée automatiquement après la mise à jour de l'équipement
   public function postUpdate() {
+
+    $markets = pluginsutiles::refreshMarket();
+    $info = $this->search($markets);
+    log::add(__CLASS__, 'debug', 'setConf array_historique data ==> ' . json_encode($info));
+    $this->setConfiguration('array_historique', $info);
+    $this->save(true);
   }
 
   // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
