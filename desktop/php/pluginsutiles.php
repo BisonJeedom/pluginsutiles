@@ -11,7 +11,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 <div class="row row-overflow">
 	<!-- Page d'accueil du plugin -->
 	<div class="col-xs-12 eqLogicThumbnailDisplay">
-		<legend><i class="fas fa-cog"></i>  {{Gestion}}</legend>
+		<legend><i class="fas fa-cog"></i> {{Gestion}}</legend>
 		<!-- Boutons de gestion du plugin -->
 		<div class="eqLogicThumbnailContainer">
 			<div class="cursor eqLogicAction logoPrimary" data-action="add">
@@ -43,7 +43,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			echo '<div class="eqLogicThumbnailContainer">';
 			foreach ($eqLogics as $eqLogic) {
 				$opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
-				echo '<div class="eqLogicDisplayCard cursor '.$opacity.'" data-eqLogic_id="' . $eqLogic->getId() . '">';
+				echo '<div class="eqLogicDisplayCard cursor ' . $opacity . '" data-eqLogic_id="' . $eqLogic->getId() . '">';
 				echo '<img src="' . $plugin->getPathImgIcon() . '">';
 				echo '<br>';
 				echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
@@ -65,7 +65,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			<span class="input-group-btn">
 				<!-- Les balises <a></a> sont volontairement fermées à la ligne suivante pour éviter les espaces entre les boutons. Ne pas modifier -->
 				<a class="btn btn-sm btn-default eqLogicAction roundedLeft" data-action="configure"><i class="fas fa-cogs"></i><span class="hidden-xs"> {{Configuration avancée}}</span>
-				</a><a class="btn btn-sm btn-default eqLogicAction" data-action="copy"><i class="fas fa-copy"></i><span class="hidden-xs">  {{Dupliquer}}</span>
+				</a><a class="btn btn-sm btn-default eqLogicAction" data-action="copy"><i class="fas fa-copy"></i><span class="hidden-xs"> {{Dupliquer}}</span>
 				</a><a class="btn btn-sm btn-success eqLogicAction" data-action="save"><i class="fas fa-check-circle"></i> {{Sauvegarder}}
 				</a><a class="btn btn-sm btn-danger eqLogicAction roundedRight" data-action="remove"><i class="fas fa-minus-circle"></i> {{Supprimer}}
 				</a>
@@ -83,7 +83,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 				<!-- Partie gauche de l'onglet "Equipements" -->
 				<!-- Paramètres généraux et spécifiques de l'équipement -->
 				<form class="form-horizontal">
-					<fieldset>  						
+					<fieldset>
 						<div class="col-lg-6">
 							<legend><i class="fas fa-wrench"></i> {{Paramètres généraux}}</legend>
 							<div class="form-group">
@@ -94,7 +94,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-4 control-label" >{{Objet parent}}</label>
+								<label class="col-sm-4 control-label">{{Objet parent}}</label>
 								<div class="col-sm-6">
 									<select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id">
 										<option value="">{{Aucun}}</option>
@@ -129,23 +129,23 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							</div>
 
 							<legend><i class="fas fa-cogs"></i> {{Paramètres spécifiques}}</legend>
-                            
-                            <div class="form-group">
-                            	<label class="col-sm-4 control-label">{{Mots-clef}}
-                                	<sup><i class="fas fa-question-circle tooltips" title="{{Séparer les mots-clefs avec des points-virgules. Exemple : photovoltaïque;energie;soleil}}"></i></sup>
-                            	</label>
-                            	<div class="col-sm-6">
-                                	<textarea class="form-control eqLogicAttr autogrow" data-l1key="configuration" data-l2key="cfg_keywords"></textarea>
-                            	</div>
-                            </div>
 
-                            <div class="form-group">
-                                <label class="col-sm-4 control-label" >{{Alertes dans le centre de message}}</label>
-                                <div class="col-sm-6">
-                                    <input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_messagecenter" >
-                                </div>
-                            </div>
-                      
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{Mots-clef}}
+									<sup><i class="fas fa-question-circle tooltips" title="{{Séparer les mots-clefs avec des points-virgules. Exemple : photovoltaïque;energie;soleil}}"></i></sup>
+								</label>
+								<div class="col-sm-6">
+									<textarea class="form-control eqLogicAttr autogrow" data-l1key="configuration" data-l2key="cfg_keywords"></textarea>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{Alertes dans le centre de message}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_messagecenter">
+								</div>
+							</div>
+
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Nom du paramètre n°1}}
 									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le paramètre n°1 de l'équipement}}"></i></sup>
@@ -191,29 +191,29 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<textarea class="form-control eqLogicAttr autogrow" data-l1key="comment"></textarea>
 								</div>
 							</div>
-                            
-                            <?php
-                            echo "TEST";
-                           	$array_historique = array_reverse(config::byKey('array_historique', 'pluginsutiles'));
-                            foreach ($array_historique as $historique) { // [0] date / [1] id / [2] nom plugin / [3] auteur
-                            	if ($nb == 50) {
-                            		exit;
-                            	}
-                            	$nb++;
-                            	echo '<div class="col-sm-4">';
-                            	if ($historique[3] == '') {
-                            		echo $historique[0].' : '.$historique[2];
-                            	} else {
-                            		echo '<div class="market cursor install" data-market_id="'.$historique[1].'" data-market_type="plugin">'.$historique[0].' : '.$historique[2].' par '.$historique[3].'</div>';
-                           	 	}
-                            	echo '</div>';
-                            	echo '<br>';                 	
-                            }
-                        	?>
-						</div>                 
-                       
-                       
-                        
+
+							<?php
+							echo "TEST";
+							$array_historique = array_reverse(config::byKey('array_historique', 'pluginsutiles'));
+							foreach ($array_historique as $historique) { // [0] date / [1] id / [2] nom plugin / [3] auteur
+								if ($nb == 50) {
+									exit;
+								}
+								$nb++;
+								echo '<div class="col-sm-4">';
+								if ($historique[3] == '') {
+									echo $historique[0] . ' : ' . $historique[2];
+								} else {
+									echo '<div class="market cursor install" data-market_id="' . $historique[1] . '" data-market_type="plugin">' . $historique[0] . ' : ' . $historique[2] . ' par ' . $historique[3] . '</div>';
+								}
+								echo '</div>';
+								echo '<br>';
+							}
+							?>
+						</div>
+
+
+
 					</fieldset>
 				</form>
 			</div><!-- /.tabpanel #eqlogictab-->
@@ -244,6 +244,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 </div><!-- /.row row-overflow -->
 
 <!-- Inclusion du fichier javascript du plugin (dossier, nom_du_fichier, extension_du_fichier, id_du_plugin) -->
-<?php include_file('desktop', 'pluginsutiles', 'js', 'pluginsutiles');?>
+<?php include_file('desktop', 'pluginsutiles', 'js', 'pluginsutiles'); ?>
 <!-- Inclusion du fichier javascript du core - NE PAS MODIFIER NI SUPPRIMER -->
-<?php include_file('core', 'plugin.template', 'js');?>
+<?php include_file('core', 'plugin.template', 'js'); ?>

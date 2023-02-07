@@ -13,25 +13,25 @@
 * You should have received a copy of the GNU General Public License
 * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
 */
-$("#table_cmd").sortable({axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
+$("#table_cmd").sortable({ axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true });
 
-$("#div_action_notif").sortable({axis: "y", cursor: "move", items: ".action_notif", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true});
+$("#div_action_notif").sortable({ axis: "y", cursor: "move", items: ".action_notif", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true });
 
 
 $('.addAction').off('click').on('click', function () {
   addAction({}, $(this).attr('data-type'));
 });
 
-$("body").off('click','.bt_removeAction').on('click','.bt_removeAction',function () {
+$("body").off('click', '.bt_removeAction').on('click', '.bt_removeAction', function () {
   var type = $(this).attr('data-type');
   $(this).closest('.' + type).remove();
 });
 
 // permet d'afficher la liste des cmd Jeedom pour choisir sa commande de type "action"
-$("body").off('click','.listCmdAction').on('click','.listCmdAction', function () {
+$("body").off('click', '.listCmdAction').on('click', '.listCmdAction', function () {
   var type = $(this).attr('data-type');
   var el = $(this).closest('.' + type).find('.expressionAttr[data-l1key=cmd]');
-  jeedom.cmd.getSelectModal({cmd: {type: 'action'}}, function (result) {
+  jeedom.cmd.getSelectModal({ cmd: { type: 'action' } }, function (result) {
     el.value(result.human);
     jeedom.cmd.displayActionOption(el.value(), '', function (html) {
       el.closest('.' + type).find('.actionOptions').html(html);
@@ -56,7 +56,7 @@ $("body").undelegate(".listAction", 'click').delegate(".listAction", 'click', fu
 
 
 //sert à charger les champs quand on clique dehors -> A garder !!!
-$('body').off('focusout','.cmdAction.expressionAttr[data-l1key=cmd]').on('focusout','.cmdAction.expressionAttr[data-l1key=cmd]',function (event) {
+$('body').off('focusout', '.cmdAction.expressionAttr[data-l1key=cmd]').on('focusout', '.cmdAction.expressionAttr[data-l1key=cmd]', function (event) {
   var type = $(this).attr('data-type');
   var expression = $(this).closest('.' + type).getValues('.expressionAttr');
   var el = $(this);
@@ -81,25 +81,25 @@ $("#table_cmd").sortable({
 function addAction(_action, _type) {
   alert("action");
   var div = '<div class="' + _type + '">';
-    div += '<div class="form-group ">';
+  div += '<div class="form-group ">';
 
-      div += '<label class="col-sm-3 control-label">Action</label>';
-      div += '<div class="col-sm-7">';
-        div += '<div class="input-group">';
-          div += '<span class="input-group-btn">';
-            div += '<a class="btn btn-default bt_removeAction roundedLeft" data-type="' + _type + '"><i class="fas fa-minus-circle"></i></a>';
-          div += '</span>';
-          div += '<input class="expressionAttr form-control cmdAction" data-l1key="cmd" data-type="' + _type + '" />';
-          div += '<span class="input-group-btn">';
-            div += '<a class="btn btn-default listAction" data-type="' + _type + '" title="{{Sélectionner un mot-clé}}"><i class="fa fa-tasks"></i></a>';
-            div += '<a class="btn btn-default listCmdAction roundedRight" data-type="' + _type + '" title="{{Sélectionner une commande}}"><i class="fas fa-list-alt"></i></a>';
-          div += '</span>';
-        div += '</div>';
-          div += '<div class="actionOptions">';
-        div += jeedom.cmd.displayActionOption(init(_action.cmd, ''), _action.options);
-      div += '</div>';
-      div += '</div>';
-      div += '</div>';
+  div += '<label class="col-sm-3 control-label">Action</label>';
+  div += '<div class="col-sm-7">';
+  div += '<div class="input-group">';
+  div += '<span class="input-group-btn">';
+  div += '<a class="btn btn-default bt_removeAction roundedLeft" data-type="' + _type + '"><i class="fas fa-minus-circle"></i></a>';
+  div += '</span>';
+  div += '<input class="expressionAttr form-control cmdAction" data-l1key="cmd" data-type="' + _type + '" />';
+  div += '<span class="input-group-btn">';
+  div += '<a class="btn btn-default listAction" data-type="' + _type + '" title="{{Sélectionner un mot-clé}}"><i class="fa fa-tasks"></i></a>';
+  div += '<a class="btn btn-default listCmdAction roundedRight" data-type="' + _type + '" title="{{Sélectionner une commande}}"><i class="fas fa-list-alt"></i></a>';
+  div += '</span>';
+  div += '</div>';
+  div += '<div class="actionOptions">';
+  div += jeedom.cmd.displayActionOption(init(_action.cmd, ''), _action.options);
+  div += '</div>';
+  div += '</div>';
+  div += '</div>';
 
   div += '</div>';
 
@@ -134,15 +134,15 @@ function printEqLogic(_eqLogic) {
 }
 
 $('.market').on('click', function () {
-  $('#md_modal2').dialog({title: "{{Market}}"});
-  $('#md_modal2').load('index.php?v=d&modal=update.display&type=' + $(this).attr('data-market_type') + '&id=' + $(this).attr('data-market_id')+'&repo=market').dialog('open');
+  $('#md_modal2').dialog({ title: "{{Market}}" });
+  $('#md_modal2').load('index.php?v=d&modal=update.display&type=' + $(this).attr('data-market_type') + '&id=' + $(this).attr('data-market_id') + '&repo=market').dialog('open');
 });
 
 
 /* Fonction permettant l'affichage des commandes dans l'équipement */
 function addCmdToTable(_cmd) {
   if (!isset(_cmd)) {
-    var _cmd = {configuration: {}}
+    var _cmd = { configuration: {} }
   }
   if (!isset(_cmd.configuration)) {
     _cmd.configuration = {}
@@ -185,10 +185,10 @@ function addCmdToTable(_cmd) {
   $('#table_cmd tbody').append(tr)
   var tr = $('#table_cmd tbody tr').last()
   jeedom.eqLogic.buildSelectCmd({
-    id:  $('.eqLogicAttr[data-l1key=id]').value(),
-    filter: {type: 'info'},
+    id: $('.eqLogicAttr[data-l1key=id]').value(),
+    filter: { type: 'info' },
     error: function (error) {
-      $('#div_alert').showAlert({message: error.message, level: 'danger'})
+      $('#div_alert').showAlert({ message: error.message, level: 'danger' })
     },
     success: function (result) {
       tr.find('.cmdAttr[data-l1key=value]').append(result)

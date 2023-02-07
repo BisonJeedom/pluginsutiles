@@ -19,30 +19,30 @@
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
 class pluginsutiles extends eqLogic {
-  
-  
+
+
   public function arrayContainsWord($str, array $arr) {
-      foreach ($arr as $word) {
-          // Works in Hebrew and any other unicode characters
-          // Thanks https://medium.com/@shiba1014/regex-word-boundaries-with-unicode-207794f6e7ed
-          // Thanks https://www.phpliveregex.com/
-          // Add casse-insensible - Bison
-          if (preg_match('/(?i)(?<=[\s,.:;"\']|^)' . $word . '(?=[\s,.:;"\']|$)/', $str)) return true;
-      }
-      return false;
-  }
-  
-  public function cleanKeyWords(array $arr) {
-  	$arr_excluded_words = array('le', 'la', 'les', 'de', 'des', 'un', 'une', 'et', 'sur', 'vers');
-    foreach ($arr_excluded_words as $word) {
-    	$key = array_search($word, $arr);
-      	if ($key !== false) {
-          unset($arr[$key]);
-        }      
+    foreach ($arr as $word) {
+      // Works in Hebrew and any other unicode characters
+      // Thanks https://medium.com/@shiba1014/regex-word-boundaries-with-unicode-207794f6e7ed
+      // Thanks https://www.phpliveregex.com/
+      // Add casse-insensible - Bison
+      if (preg_match('/(?i)(?<=[\s,.:;"\']|^)' . $word . '(?=[\s,.:;"\']|$)/', $str)) return true;
     }
-    return $arr;    
+    return false;
   }
-  
+
+  public function cleanKeyWords(array $arr) {
+    $arr_excluded_words = array('le', 'la', 'les', 'de', 'des', 'un', 'une', 'et', 'sur', 'vers');
+    foreach ($arr_excluded_words as $word) {
+      $key = array_search($word, $arr);
+      if ($key !== false) {
+        unset($arr[$key]);
+      }
+    }
+    return $arr;
+  }
+
   /*
   public function refreshMarket() {
     $url = "https://market.jeedom.com/index.php?v=d&p=market&type=plugin";
@@ -74,168 +74,169 @@ class pluginsutiles extends eqLogic {
     return;
   }
   */
-  
+
   public function refreshMarket() {
     $fullrefresh = config::byKey('fullrefresh', __CLASS__);
     if ($fullrefresh == 1) {
-    	$timeState = null;
-      	$txtLog = 'Recherche des mots clefs dans la totalité des plugins du Market';
+      $timeState = null;
+      $txtLog = 'Recherche des mots clefs dans la totalité des plugins du Market';
     } else {
-    	$timeState = 'newest';
-      	$txtLog = 'Recherche des mots clefs dans les nouveaux plugins du Market';
-    }    
+      $timeState = 'newest';
+      $txtLog = 'Recherche des mots clefs dans les nouveaux plugins du Market';
+    }
     log::add(__CLASS__, 'info', $txtLog);
-    
+
     $markets = repo_market::byFilter(array(
-    	'type' => 'plugin',
-        'timeState' => $timeState,
+      'type' => 'plugin',
+      'timeState' => $timeState,
     ));
-    
-	return utils::o2a($markets); // Conversion pour exploiter des clefs dans le tableau
-    
+
+    return utils::o2a($markets); // Conversion pour exploiter des clefs dans le tableau
+
   }
-  
-  
+
+
   public function search($_markets) {
     $eqLogicName = $this->getName();
-	log::add(__CLASS__, 'debug', 'START '.$eqLogicName);
-    
+    log::add(__CLASS__, 'debug', 'START ' . $eqLogicName);
+
     // Récupération des mots clefs
-    $cfg_keywords = $this->getConfiguration("cfg_keywords",0);
-    log::add(__CLASS__, 'info', 'Liste des mots clefs : '.$cfg_keywords);
-	$keywords = explode(';', $cfg_keywords);
-    
+    $cfg_keywords = $this->getConfiguration("cfg_keywords", 0);
+    log::add(__CLASS__, 'info', 'Liste des mots clefs : ' . $cfg_keywords);
+    $keywords = explode(';', $cfg_keywords);
+
     // Récupération des ID de plugins déjà trouvés et signalés
-    $array_IdAlreadyFound = $this->getConfiguration("array_IdAlreadyFound");    
+    $array_IdAlreadyFound = $this->getConfiguration("array_IdAlreadyFound");
     if (empty($array_IdAlreadyFound)) {
-      	log::add(__CLASS__, 'debug', 'Plugins trouvés et déjà signalés : Aucun');
-      	$array_IdAlreadyFound = array();
+      log::add(__CLASS__, 'debug', 'Plugins trouvés et déjà signalés : Aucun');
+      $array_IdAlreadyFound = array();
     } else {
-      	log::add(__CLASS__, 'debug', 'Plugins trouvés et déjà signalés : '.json_encode($array_IdAlreadyFound));    	
+      log::add(__CLASS__, 'debug', 'Plugins trouvés et déjà signalés : ' . json_encode($array_IdAlreadyFound));
     }
-    
+
     // Récupération des historiques
     $array_historique = $this->getConfiguration("array_historique");
     if (empty($array_historique)) {
-      	log::add(__CLASS__, 'debug', 'Historique : Aucun');
-      	$array_historique = array();
+      log::add(__CLASS__, 'debug', 'Historique : Aucun');
+      $array_historique = array();
     } else {
-      	log::add(__CLASS__, 'debug', 'Historique : '.json_encode($array_historique));    	
+      log::add(__CLASS__, 'debug', 'Historique : ' . json_encode($array_historique));
     }
-    
+
     // Récupération avertissement dans le centre de message
     $cfg_messagecenter = $this->getConfiguration("cfg_messagecenter", 0);
-    
-    $error = 1; $nb_found = 0;$nb_plugins = 0;
-    
-    foreach ($_markets as $plugin) {
-      	$nb_plugins++;
-      	$error = 0;
-      
-      	$id = $plugin['id'];
-      	$name = $plugin['name'];
-        $author = $plugin['author'];
-      	$cost = $plugin['cost'];
-      	$description = $plugin['description'];
 
-      	if ($cost == 0) {
-          $cost_txt = 'Gratuit';          
+    $error = 1;
+    $nb_found = 0;
+    $nb_plugins = 0;
+
+    foreach ($_markets as $plugin) {
+      $nb_plugins++;
+      $error = 0;
+
+      $id = $plugin['id'];
+      $name = $plugin['name'];
+      $author = $plugin['author'];
+      $cost = $plugin['cost'];
+      $description = $plugin['description'];
+
+      if ($cost == 0) {
+        $cost_txt = 'Gratuit';
+      } else {
+        $cost_txt = $cost . '€';
+      }
+
+      if (self::arrayContainsWord($description, $keywords)) {
+        $nb_found++;
+        log::add(__CLASS__, 'info', 'Plugin correspondant à un mots clefs :');
+
+        if (array_search($id, $array_IdAlreadyFound) === false) {
+          $new = 'Nouveau'; // id non trouvé dans le tableau
         } else {
-          $cost_txt = $cost.'€';
+          $new = 'Ancien'; // id déjà présent dans le tableau
         }
-          
-      	if (self::arrayContainsWord($description, $keywords)) {
-          	$nb_found++;
-          	log::add(__CLASS__, 'info', 'Plugin correspondant à un mots clefs :');
-          
-          	if (array_search($id, $array_IdAlreadyFound) === false) {
-              	$new = 'Nouveau'; // id non trouvé dans le tableau
-            } else {
-            	$new = 'Ancien'; // id déjà présent dans le tableau
-            }
-          
-            log::add(__CLASS__, 'info', '-> ['.$new.'] '.$name. ' par '.$author.' ('.$cost_txt.')');  
-          	log::add(__CLASS__, 'info', '-> ['.$new.'] description : '.$description);          
-			
-          	if ($new == 'Nouveau') {
-            	$array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
-                $array_historique[] = array(date("d/m/Y"), $id, $name, $author);
-              	if ($cfg_messagecenter == 1) {
-                	log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
-                  	message::add(__CLASS__, 'Plugin disponible correspondant aux mots clefs : '.$name. ' par '.$author.' ('.$cost_txt.')');  
-              	}
-            }
-        } else {
-            log::add(__CLASS__, 'debug', $name. ' par '.$author.' ('.$cost_txt.')');  
-          	log::add(__CLASS__, 'debug', 'description : '.$description);
-        }      	
+
+        log::add(__CLASS__, 'info', '-> [' . $new . '] ' . $name . ' par ' . $author . ' (' . $cost_txt . ')');
+        log::add(__CLASS__, 'info', '-> [' . $new . '] description : ' . $description);
+
+        if ($new == 'Nouveau') {
+          $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
+          $array_historique[] = array(date("d/m/Y"), $id, $name, $author);
+          if ($cfg_messagecenter == 1) {
+            log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
+            message::add(__CLASS__, 'Plugin disponible correspondant aux mots clefs : ' . $name . ' par ' . $author . ' (' . $cost_txt . ')');
+          }
+        }
+      } else {
+        log::add(__CLASS__, 'debug', $name . ' par ' . $author . ' (' . $cost_txt . ')');
+        log::add(__CLASS__, 'debug', 'description : ' . $description);
+      }
     }
-    
-    if ($error == 0) {      	
-      	log::add(__CLASS__, 'debug', 'Mise à jour des plugins signalés : '.json_encode($array_IdAlreadyFound));
-      	config::save('array_IdAlreadyFound', $array_IdAlreadyFound, __CLASS__);
-      
-      	log::add(__CLASS__, 'debug', 'Historique : '.json_encode($array_historique));
-     	config::save('array_historique', $array_historique, __CLASS__);      	
-     
-      	config::save('fullrefresh', 0, __CLASS__);
+
+    if ($error == 0) {
+      log::add(__CLASS__, 'debug', 'Mise à jour des plugins signalés : ' . json_encode($array_IdAlreadyFound));
+      config::save('array_IdAlreadyFound', $array_IdAlreadyFound, __CLASS__);
+
+      log::add(__CLASS__, 'debug', 'Historique : ' . json_encode($array_historique));
+      config::save('array_historique', $array_historique, __CLASS__);
+
+      config::save('fullrefresh', 0, __CLASS__);
     }
-    
-    log::add(__CLASS__, 'info', 'Recherche terminée parmis '.$nb_plugins.' plugins : '.$nb_found.' plugins trouvé(s) et correspondant aux mots clefs');
-    
+
+    log::add(__CLASS__, 'info', 'Recherche terminée parmis ' . $nb_plugins . ' plugins : ' . $nb_found . ' plugins trouvé(s) et correspondant aux mots clefs');
   }
-  
+
   public function refreshFromMarket() {
     log::add(__CLASS__, 'debug', 'START');
-    
+
     // Récupération des mots clefs
     $cfg_keywords = config::byKey('cfg_keywords', __CLASS__);
-    log::add(__CLASS__, 'info', 'Liste des mots clefs : '.$cfg_keywords);
-	$keywords = explode(';', $cfg_keywords);
-    
+    log::add(__CLASS__, 'info', 'Liste des mots clefs : ' . $cfg_keywords);
+    $keywords = explode(';', $cfg_keywords);
+
     // Récupération des ID de plugins déjà trouvés et signalés
-    $array_IdAlreadyFound = config::byKey('array_IdAlreadyFound', __CLASS__);    
+    $array_IdAlreadyFound = config::byKey('array_IdAlreadyFound', __CLASS__);
     if (empty($array_IdAlreadyFound)) {
-      	log::add(__CLASS__, 'debug', 'Plugins trouvés et déjà signalés : Aucun');
-      	$array_IdAlreadyFound = array();
+      log::add(__CLASS__, 'debug', 'Plugins trouvés et déjà signalés : Aucun');
+      $array_IdAlreadyFound = array();
     } else {
-      	log::add(__CLASS__, 'debug', 'Plugins trouvés et déjà signalés : '.json_encode($array_IdAlreadyFound));    	
+      log::add(__CLASS__, 'debug', 'Plugins trouvés et déjà signalés : ' . json_encode($array_IdAlreadyFound));
     }
-    
+
     // Récupération des historiques ID de plugins déjà trouvés et signalés
     $array_historique = config::byKey('array_historique', __CLASS__);
     if (empty($array_historique)) {
-      	log::add(__CLASS__, 'debug', 'Historique : Aucun');
-      	$array_historique = array();
+      log::add(__CLASS__, 'debug', 'Historique : Aucun');
+      $array_historique = array();
     } else {
-      	log::add(__CLASS__, 'debug', 'Historique : '.json_encode($array_historique));    	
+      log::add(__CLASS__, 'debug', 'Historique : ' . json_encode($array_historique));
     }
-    
-                 
+
+
     //$keywords = self::cleanKeyWords($keywords);
     //log::add(__CLASS__, 'info', 'Liste des mots clefs clean : '.print_r($keywords, true));
-    
+
     //$updated_timestamp = config::byKey('updated_timestamp', __CLASS__);
-    
+
     $cfg_messagecenter = config::byKey('cfg_messagecenter', __CLASS__);
-    
+
     $fullrefresh = config::byKey('fullrefresh', __CLASS__);
     if ($fullrefresh == 1) {
-    	$timeState = null;
-      	$txtLog = 'Recherche des mots clefs dans la totalité des plugins du Market';
+      $timeState = null;
+      $txtLog = 'Recherche des mots clefs dans la totalité des plugins du Market';
     } else {
-    	$timeState = 'newest';
-      	$txtLog = 'Recherche des mots clefs dans les nouveaux plugins du Market';
-    }    
+      $timeState = 'newest';
+      $txtLog = 'Recherche des mots clefs dans les nouveaux plugins du Market';
+    }
     log::add(__CLASS__, 'info', $txtLog);
-    
+
     $markets = repo_market::byFilter(array(
-    	'type' => 'plugin',
-        'timeState' => $timeState,
+      'type' => 'plugin',
+      'timeState' => $timeState,
     ));
-    
-	$markets = utils::o2a($markets); // Conversion pour exploiter des clefs dans le tableau
-    
+
+    $markets = utils::o2a($markets); // Conversion pour exploiter des clefs dans le tableau
+
     /*
     foreach($markets as $key => $item) {
     	log::add(__CLASS__, 'debug', 'key : '.$key);
@@ -251,68 +252,69 @@ class pluginsutiles extends eqLogic {
         }
     }
     */
-        
-    $error = 1; $nb_found = 0;$nb_plugins = 0;
-    
-    foreach ($markets as $plugin) {
-      	$nb_plugins++;
-      	$error = 0;
-      
-      	$id = $plugin['id'];
-      	$name = $plugin['name'];
-        $author = $plugin['author'];
-      	$cost = $plugin['cost'];
-      	$description = $plugin['description'];
 
-      	if ($cost == 0) {
-          $cost_txt = 'Gratuit';          
+    $error = 1;
+    $nb_found = 0;
+    $nb_plugins = 0;
+
+    foreach ($markets as $plugin) {
+      $nb_plugins++;
+      $error = 0;
+
+      $id = $plugin['id'];
+      $name = $plugin['name'];
+      $author = $plugin['author'];
+      $cost = $plugin['cost'];
+      $description = $plugin['description'];
+
+      if ($cost == 0) {
+        $cost_txt = 'Gratuit';
+      } else {
+        $cost_txt = $cost . '€';
+      }
+
+      if (self::arrayContainsWord($description, $keywords)) {
+        $nb_found++;
+        log::add(__CLASS__, 'info', 'Plugin correspondant à un mots clefs :');
+
+        if (array_search($id, $array_IdAlreadyFound) === false) {
+          $new = 'Nouveau'; // id non trouvé dans le tableau
         } else {
-          $cost_txt = $cost.'€';
+          $new = 'Ancien'; // id déjà présent dans le tableau
         }
-          
-      	if (self::arrayContainsWord($description, $keywords)) {
-          	$nb_found++;
-          	log::add(__CLASS__, 'info', 'Plugin correspondant à un mots clefs :');
-          
-          	if (array_search($id, $array_IdAlreadyFound) === false) {
-              	$new = 'Nouveau'; // id non trouvé dans le tableau
-            } else {
-            	$new = 'Ancien'; // id déjà présent dans le tableau
-            }
-          
-            log::add(__CLASS__, 'info', '-> ['.$new.'] '.$name. ' par '.$author.' ('.$cost_txt.')');  
-          	log::add(__CLASS__, 'info', '-> ['.$new.'] description : '.$description);          
-			
-          	if ($new == 'Nouveau') {
-            	$array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
-                $array_historique[] = array(date("d/m/Y"), $id, $name, $author);
-              	if ($cfg_messagecenter == 1) {
-                	log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
-                  	message::add(__CLASS__, 'Plugin disponible correspondant aux mots clefs : '.$name. ' par '.$author.' ('.$cost_txt.')');  
-              	}
-            }
-        } else {
-            log::add(__CLASS__, 'debug', $name. ' par '.$author.' ('.$cost_txt.')');  
-          	log::add(__CLASS__, 'debug', 'description : '.$description);
-        }      	
+
+        log::add(__CLASS__, 'info', '-> [' . $new . '] ' . $name . ' par ' . $author . ' (' . $cost_txt . ')');
+        log::add(__CLASS__, 'info', '-> [' . $new . '] description : ' . $description);
+
+        if ($new == 'Nouveau') {
+          $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
+          $array_historique[] = array(date("d/m/Y"), $id, $name, $author);
+          if ($cfg_messagecenter == 1) {
+            log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
+            message::add(__CLASS__, 'Plugin disponible correspondant aux mots clefs : ' . $name . ' par ' . $author . ' (' . $cost_txt . ')');
+          }
+        }
+      } else {
+        log::add(__CLASS__, 'debug', $name . ' par ' . $author . ' (' . $cost_txt . ')');
+        log::add(__CLASS__, 'debug', 'description : ' . $description);
+      }
     }
-    
-    if ($error == 0) {      	
-      	//$json_IdAlreadyFound = json_encode($array_IdAlreadyFound, JSON_FORCE_OBJECT);
-      	log::add(__CLASS__, 'debug', 'Mise à jour des plugins signalés : '.json_encode($array_IdAlreadyFound));
-      	config::save('array_IdAlreadyFound', $array_IdAlreadyFound, __CLASS__);
-      
-      	log::add(__CLASS__, 'debug', 'Historique : '.json_encode($array_historique));
-     	config::save('array_historique', $array_historique, __CLASS__);      	
-     
-      	config::save('fullrefresh', 0, __CLASS__);
-    	//config::save('updated_timestamp', time(), __CLASS__);
+
+    if ($error == 0) {
+      //$json_IdAlreadyFound = json_encode($array_IdAlreadyFound, JSON_FORCE_OBJECT);
+      log::add(__CLASS__, 'debug', 'Mise à jour des plugins signalés : ' . json_encode($array_IdAlreadyFound));
+      config::save('array_IdAlreadyFound', $array_IdAlreadyFound, __CLASS__);
+
+      log::add(__CLASS__, 'debug', 'Historique : ' . json_encode($array_historique));
+      config::save('array_historique', $array_historique, __CLASS__);
+
+      config::save('fullrefresh', 0, __CLASS__);
+      //config::save('updated_timestamp', time(), __CLASS__);
     }
-    
-    log::add(__CLASS__, 'info', 'Recherche terminée parmis '.$nb_plugins.' plugins : '.$nb_found.' plugins trouvé(s) et correspondant aux mots clefs');
-    
+
+    log::add(__CLASS__, 'info', 'Recherche terminée parmis ' . $nb_plugins . ' plugins : ' . $nb_found . ' plugins trouvé(s) et correspondant aux mots clefs');
   }
- 
+
   /*     * *************************Attributs****************************** */
 
   /*
@@ -364,14 +366,14 @@ class pluginsutiles extends eqLogic {
   */
   public static function cronDaily() {
     //sleep(rand(0,60));
-   	$markets = pluginsutiles::refreshMarket();
+    $markets = pluginsutiles::refreshMarket();
     foreach (eqLogic::byType('solcast') as $eqLogic) {
-    	if ($eqLogic->getIsEnable()) {
-        	$eqLogic->search($markets);
-        	//$eqLogicName = $eqLogic->getName();
-        }
+      if ($eqLogic->getIsEnable()) {
+        $eqLogic->search($markets);
+        //$eqLogicName = $eqLogic->getName();
+      }
     }
-  	//pluginsutiles::refreshFromMarket();  
+    //pluginsutiles::refreshFromMarket();  
   }
 
 
@@ -399,27 +401,27 @@ class pluginsutiles extends eqLogic {
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
-	  $info = $this->getCmd(null, 'html');
-	  if (!is_object($info)) {
-		$info = new pluginsutilesCmd();
-		$info->setName(__('HTML', __FILE__));
-	  }
-	  $info->setLogicalId('html');
-	  $info->setEqLogic_id($this->getId());
-	  $info->setType('info');
-	  $info->setSubType('string');
-	  $info->save();
+    $info = $this->getCmd(null, 'html');
+    if (!is_object($info)) {
+      $info = new pluginsutilesCmd();
+      $info->setName(__('HTML', __FILE__));
+    }
+    $info->setLogicalId('html');
+    $info->setEqLogic_id($this->getId());
+    $info->setType('info');
+    $info->setSubType('string');
+    $info->save();
 
-	  $refresh = $this->getCmd(null, 'refresh');
-	  if (!is_object($refresh)) {
-		$refresh = new pluginsutilesCmd();
-		$refresh->setName(__('Rafraichir', __FILE__));
-	  }
-	  $refresh->setEqLogic_id($this->getId());
-	  $refresh->setLogicalId('refresh');
-	  $refresh->setType('action');
-	  $refresh->setSubType('other');
-	  $refresh->save();			
+    $refresh = $this->getCmd(null, 'refresh');
+    if (!is_object($refresh)) {
+      $refresh = new pluginsutilesCmd();
+      $refresh->setName(__('Rafraichir', __FILE__));
+    }
+    $refresh->setEqLogic_id($this->getId());
+    $refresh->setLogicalId('refresh');
+    $refresh->setType('action');
+    $refresh->setSubType('other');
+    $refresh->save();
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -461,22 +463,21 @@ class pluginsutiles extends eqLogic {
   */
   public static function postConfig_cfg_keywords($value) {
     $cfg_keywords = config::byKey('cfg_keywords', __CLASS__);
-    log::add(__CLASS__, 'info', 'Modification des mots clefs : '.$cfg_keywords);
+    log::add(__CLASS__, 'info', 'Modification des mots clefs : ' . $cfg_keywords);
     config::save('fullrefresh', 1, __CLASS__); // Passage à 1 de "fullrefesh" suite au changement de la liste des mots clefs
-    
+
     $array_historique = config::byKey('array_historique', __CLASS__);
     if (empty($array_historique)) {
-       	$array_historique = array();
+      $array_historique = array();
     }
     $array_historique[] = array(date("d/m/Y"), '', 'Mise à jour des mots clefs', ''); // date, id, name, author (un peu adapté pour informer changement de mots-clefs
     config::save('array_historique', $array_historique, __CLASS__);
-    
-    pluginsutiles::refreshFromMarket();    
+
+    pluginsutiles::refreshFromMarket();
   }
 
 
   /*     * **********************Getteur Setteur*************************** */
-
 }
 
 class pluginsutilesCmd extends cmd {
@@ -502,17 +503,16 @@ class pluginsutilesCmd extends cmd {
   public function execute($_options = array()) {
     //config::remove('array_IdAlreadyFound', 'pluginsutiles');
     //config::remove('array_historique', 'pluginsutiles');
-    
-  	$eqlogic = $this->getEqLogic();
-  	switch ($this->getLogicalId()) {
-    	case 'refresh':
-        	$markets = pluginsutiles::refreshMarket();
-        	$info = $eqlogic->search($markets);
-        	//$info = $eqlogic->refreshFromMarket(); 
-    		//$eqlogic->checkAndUpdateCmd('html', $info);
-  	}
+
+    $eqlogic = $this->getEqLogic();
+    switch ($this->getLogicalId()) {
+      case 'refresh':
+        $markets = pluginsutiles::refreshMarket();
+        $info = $eqlogic->search($markets);
+        //$info = $eqlogic->refreshFromMarket(); 
+        //$eqlogic->checkAndUpdateCmd('html', $info);
+    }
   }
 
   /*     * **********************Getteur Setteur*************************** */
-
 }
