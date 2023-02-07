@@ -6,7 +6,7 @@
 	},
 	"licence" : "AGPL",
 	"author" : "Bison",
-	"require" : "3.3.39",
+	"require" : "4.1.20",
 	"category" : "organization",
 	"hasDependency" : false,
 	"hasOwnDeamon" : false,
@@ -14,7 +14,7 @@
 	"changelog" : "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/changelog_stable.md",
 	"documentation" : "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/index_stable.md",
 	"changelog_beta" : "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/changelog_beta.md",
-	"documentation_beta" : "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/index_beta.md,
+	"documentation_beta" : "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/index_beta.md
 	"link" : {
 		"forum":"",
 		"video" : ""
@@ -22,13 +22,5 @@
 	"language": [
 		"fr_FR"
 	],
-	"compatibility": [
-		"miniplus",
-		"smart",
-		"rpi",
-		"docker",
-		"diy",
-		"v4",
-		"atlas"
-	]
+	"compatibility": ["smart", "rpi", "docker", "diy", "v4", "atlas"]
 }
