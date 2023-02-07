@@ -14,20 +14,18 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		<legend><i class="fas fa-cog"></i>  {{Gestion}}</legend>
 		<!-- Boutons de gestion du plugin -->
 		<div class="eqLogicThumbnailContainer">
-        	<!--
 			<div class="cursor eqLogicAction logoPrimary" data-action="add">
 				<i class="fas fa-plus-circle"></i>
 				<br>
 				<span>{{Ajouter}}</span>
 			</div>
-            -->
 			<div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
 				<i class="fas fa-wrench"></i>
 				<br>
 				<span>{{Configuration et information}}</span>
 			</div>
 		</div>
-        <!--
+
 		<legend><i class="fas fa-table"></i> {{Mes équipements}}</legend>
 		<?php
 		if (count($eqLogics) == 0) {
@@ -57,7 +55,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			echo '</div>';
 		}
 		?>
-        -->
+
 	</div> <!-- /.eqLogicThumbnailDisplay -->
 
 	<!-- Page de présentation de l'équipement -->
@@ -85,7 +83,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 				<!-- Partie gauche de l'onglet "Equipements" -->
 				<!-- Paramètres généraux et spécifiques de l'équipement -->
 				<form class="form-horizontal">
-					<fieldset>
+					<fieldset>  						
 						<div class="col-lg-6">
 							<legend><i class="fas fa-wrench"></i> {{Paramètres généraux}}</legend>
 							<div class="form-group">
@@ -131,6 +129,23 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							</div>
 
 							<legend><i class="fas fa-cogs"></i> {{Paramètres spécifiques}}</legend>
+                            
+                            <div class="form-group">
+                            	<label class="col-sm-4 control-label">{{Mots-clef}}
+                                	<sup><i class="fas fa-question-circle tooltips" title="{{Séparer les mots-clefs avec des points-virgules. Exemple : photovoltaïque;energie;soleil}}"></i></sup>
+                            	</label>
+                            	<div class="col-sm-6">
+                                	<textarea class="form-control eqLogicAttr autogrow" data-l1key="configuration" data-l2key="cfg_keywords"></textarea>
+                            	</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" >{{Alertes dans le centre de message}}</label>
+                                <div class="col-sm-6">
+                                    <input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_messagecenter" >
+                                </div>
+                            </div>
+                      
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Nom du paramètre n°1}}
 									<sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le paramètre n°1 de l'équipement}}"></i></sup>
@@ -176,7 +191,29 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<textarea class="form-control eqLogicAttr autogrow" data-l1key="comment"></textarea>
 								</div>
 							</div>
-						</div>
+                            
+                            <?php
+                            echo "TEST";
+                           	$array_historique = array_reverse(config::byKey('array_historique', 'pluginsutiles'));
+                            foreach ($array_historique as $historique) { // [0] date / [1] id / [2] nom plugin / [3] auteur
+                            	if ($nb == 50) {
+                            		exit;
+                            	}
+                            	$nb++;
+                            	echo '<div class="col-sm-4">';
+                            	if ($historique[3] == '') {
+                            		echo $historique[0].' : '.$historique[2];
+                            	} else {
+                            		echo '<div class="market cursor install" data-market_id="'.$historique[1].'" data-market_type="plugin">'.$historique[0].' : '.$historique[2].' par '.$historique[3].'</div>';
+                           	 	}
+                            	echo '</div>';
+                            	echo '<br>';                 	
+                            }
+                        	?>
+						</div>                 
+                       
+                       
+                        
 					</fieldset>
 				</form>
 			</div><!-- /.tabpanel #eqlogictab-->

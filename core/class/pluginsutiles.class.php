@@ -75,6 +75,116 @@ class pluginsutiles extends eqLogic {
   }
   */
   
+  public function refreshMarket() {
+    $fullrefresh = config::byKey('fullrefresh', __CLASS__);
+    if ($fullrefresh == 1) {
+    	$timeState = null;
+      	$txtLog = 'Recherche des mots clefs dans la totalité des plugins du Market';
+    } else {
+    	$timeState = 'newest';
+      	$txtLog = 'Recherche des mots clefs dans les nouveaux plugins du Market';
+    }    
+    log::add(__CLASS__, 'info', $txtLog);
+    
+    $markets = repo_market::byFilter(array(
+    	'type' => 'plugin',
+        'timeState' => $timeState,
+    ));
+    
+	return utils::o2a($markets); // Conversion pour exploiter des clefs dans le tableau
+    
+  }
+  
+  
+  public function search($_markets) {
+    $eqLogicName = $this->getName();
+	log::add(__CLASS__, 'debug', 'START '.$eqLogicName);
+    
+    // Récupération des mots clefs
+    $cfg_keywords = $this->getConfiguration("cfg_keywords",0);
+    log::add(__CLASS__, 'info', 'Liste des mots clefs : '.$cfg_keywords);
+	$keywords = explode(';', $cfg_keywords);
+    
+    // Récupération des ID de plugins déjà trouvés et signalés
+    $array_IdAlreadyFound = $this->getConfiguration("array_IdAlreadyFound");    
+    if (empty($array_IdAlreadyFound)) {
+      	log::add(__CLASS__, 'debug', 'Plugins trouvés et déjà signalés : Aucun');
+      	$array_IdAlreadyFound = array();
+    } else {
+      	log::add(__CLASS__, 'debug', 'Plugins trouvés et déjà signalés : '.json_encode($array_IdAlreadyFound));    	
+    }
+    
+    // Récupération des historiques
+    $array_historique = $this->getConfiguration("array_historique");
+    if (empty($array_historique)) {
+      	log::add(__CLASS__, 'debug', 'Historique : Aucun');
+      	$array_historique = array();
+    } else {
+      	log::add(__CLASS__, 'debug', 'Historique : '.json_encode($array_historique));    	
+    }
+    
+    // Récupération avertissement dans le centre de message
+    $cfg_messagecenter = $this->getConfiguration("cfg_messagecenter", 0);
+    
+    $error = 1; $nb_found = 0;$nb_plugins = 0;
+    
+    foreach ($_markets as $plugin) {
+      	$nb_plugins++;
+      	$error = 0;
+      
+      	$id = $plugin['id'];
+      	$name = $plugin['name'];
+        $author = $plugin['author'];
+      	$cost = $plugin['cost'];
+      	$description = $plugin['description'];
+
+      	if ($cost == 0) {
+          $cost_txt = 'Gratuit';          
+        } else {
+          $cost_txt = $cost.'€';
+        }
+          
+      	if (self::arrayContainsWord($description, $keywords)) {
+          	$nb_found++;
+          	log::add(__CLASS__, 'info', 'Plugin correspondant à un mots clefs :');
+          
+          	if (array_search($id, $array_IdAlreadyFound) === false) {
+              	$new = 'Nouveau'; // id non trouvé dans le tableau
+            } else {
+            	$new = 'Ancien'; // id déjà présent dans le tableau
+            }
+          
+            log::add(__CLASS__, 'info', '-> ['.$new.'] '.$name. ' par '.$author.' ('.$cost_txt.')');  
+          	log::add(__CLASS__, 'info', '-> ['.$new.'] description : '.$description);          
+			
+          	if ($new == 'Nouveau') {
+            	$array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
+                $array_historique[] = array(date("d/m/Y"), $id, $name, $author);
+              	if ($cfg_messagecenter == 1) {
+                	log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
+                  	message::add(__CLASS__, 'Plugin disponible correspondant aux mots clefs : '.$name. ' par '.$author.' ('.$cost_txt.')');  
+              	}
+            }
+        } else {
+            log::add(__CLASS__, 'debug', $name. ' par '.$author.' ('.$cost_txt.')');  
+          	log::add(__CLASS__, 'debug', 'description : '.$description);
+        }      	
+    }
+    
+    if ($error == 0) {      	
+      	log::add(__CLASS__, 'debug', 'Mise à jour des plugins signalés : '.json_encode($array_IdAlreadyFound));
+      	config::save('array_IdAlreadyFound', $array_IdAlreadyFound, __CLASS__);
+      
+      	log::add(__CLASS__, 'debug', 'Historique : '.json_encode($array_historique));
+     	config::save('array_historique', $array_historique, __CLASS__);      	
+     
+      	config::save('fullrefresh', 0, __CLASS__);
+    }
+    
+    log::add(__CLASS__, 'info', 'Recherche terminée parmis '.$nb_plugins.' plugins : '.$nb_found.' plugins trouvé(s) et correspondant aux mots clefs');
+    
+  }
+  
   public function refreshFromMarket() {
     log::add(__CLASS__, 'debug', 'START');
     
@@ -253,8 +363,15 @@ class pluginsutiles extends eqLogic {
   * Fonction exécutée automatiquement tous les jours par Jeedom
   */
   public static function cronDaily() {
-    sleep(rand(0,60));
-  	pluginsutiles::refreshFromMarket();  
+    //sleep(rand(0,60));
+   	$markets = pluginsutiles::refreshMarket();
+    foreach (eqLogic::byType('solcast') as $eqLogic) {
+    	if ($eqLogic->getIsEnable()) {
+        	$eqLogic->search($markets);
+        	//$eqLogicName = $eqLogic->getName();
+        }
+    }
+  	//pluginsutiles::refreshFromMarket();  
   }
 
 
@@ -389,8 +506,10 @@ class pluginsutilesCmd extends cmd {
   	$eqlogic = $this->getEqLogic();
   	switch ($this->getLogicalId()) {
     	case 'refresh':
-        	$info = $eqlogic->refreshFromMarket(); 
-    		$eqlogic->checkAndUpdateCmd('html', $info);
+        	$markets = pluginsutiles::refreshMarket();
+        	$info = $eqlogic->search($markets);
+        	//$info = $eqlogic->refreshFromMarket(); 
+    		//$eqlogic->checkAndUpdateCmd('html', $info);
   	}
   }
 
