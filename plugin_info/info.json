@@ -14,7 +14,7 @@
 	"changelog" : "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/changelog_stable.md",
 	"documentation" : "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/index_stable.md",
 	"changelog_beta" : "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/changelog_beta.md",
-	"documentation_beta" : "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/index_beta.md,
+	"documentation_beta": "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/index_beta.md",
 	"link" : {
 		"forum":"",
 		"video" : ""
