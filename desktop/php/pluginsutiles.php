@@ -128,7 +128,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 
-							<legend><i class="fas fa-cogs"></i> {{Paramètres de recherche}}</legend>
+							<legend><i class="fas fa-search"></i> {{Paramètres de recherche}}</legend>
 
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Mots-clef}}
