@@ -453,6 +453,17 @@ class pluginsutiles extends eqLogic {
     $refresh->setType('action');
     $refresh->setSubType('other');
     $refresh->save();
+
+    $refresh = $this->getCmd(null, 'removeHistory');
+    if (!is_object($refresh)) {
+      $refresh = new pluginsutilesCmd();
+      $refresh->setName(__('Supprimer tout l\'historique', __FILE__));
+    }
+    $refresh->setEqLogic_id($this->getId());
+    $refresh->setLogicalId('removeHistory');
+    $refresh->setType('action');
+    $refresh->setSubType('other');
+    $refresh->save();
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -505,11 +516,6 @@ class pluginsutilesCmd extends cmd {
   public static $_widgetPossibility = array();
   */
 
-  /*     * ***********************Methode static*************************** */
-
-
-  /*     * *********************Methode d'instance************************* */
-
   /*
   * Permet d'empêcher la suppression des commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
   public function dontRemoveCmd() {
@@ -519,8 +525,7 @@ class pluginsutilesCmd extends cmd {
 
   // Exécution d'une commande
   public function execute($_options = array()) {
-    //config::remove('array_IdAlreadyFound', 'pluginsutiles');
-    //config::remove('array_historique', 'pluginsutiles');
+
     /** @var pluginsutiles $eqlogic */
     $eqlogic = $this->getEqLogic();
     switch ($this->getLogicalId()) {
@@ -530,11 +535,16 @@ class pluginsutilesCmd extends cmd {
         log::add(__CLASS__, 'debug', 'setConf array_historique data ==> ' . json_encode($info));
         $this->setConfiguration('array_historique', $info);
         $this->save(true);
-        //$info = $eqlogic->refreshFromMarket(); 
-        //$eqlogic->checkAndUpdateCmd('html', $info);
         break;
+
+      case 'removeHistory':
+        $eqlogic->setConfiguration('array_historique', '');
+        $eqlogic->save(true);
+        break;
+
       default:
         log::add(__CLASS__, 'debug', 'Erreur durant execute');
+        break;
     }
   }
 
