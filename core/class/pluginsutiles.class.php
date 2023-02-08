@@ -134,6 +134,7 @@ class pluginsutiles extends eqLogic {
     $nb_plugins = 0;
 
     foreach ($_markets as $plugin) {
+      // log::add(__CLASS__, 'debug', 'receive plugin =>' . json_encode($plugin));
       $nb_plugins++;
       $error = 0;
 
@@ -142,6 +143,7 @@ class pluginsutiles extends eqLogic {
       $author = $plugin['author'];
       $cost = $plugin['cost'];
       $description = $plugin['description'];
+      $utilisation = $plugin['utilization'];
 
       if ($cost == 0) {
         $cost_txt = 'Gratuit';
@@ -149,7 +151,29 @@ class pluginsutiles extends eqLogic {
         $cost_txt = $cost . '€';
       }
 
-      if (self::arrayContainsWord($description, $keywords)) {
+      $pluginAvailable = false;
+      if ($this->getConfiguration('checkName', 1) && self::arrayContainsWord($name, $keywords)) {
+        log::add(__CLASS__, 'warning', 'one key found in *NAME*');
+        $pluginAvailable = true;
+      }
+
+      if ($this->getConfiguration('checkDescription', 1) && self::arrayContainsWord($description, $keywords)) {
+        log::add(__CLASS__, 'warning', 'one key found in *DESC*');
+        $pluginAvailable = true;
+      }
+
+      if ($this->getConfiguration('checkUtilisation', 0) && self::arrayContainsWord($utilisation, $keywords)) {
+        log::add(__CLASS__, 'warning', 'one key found in *UTILISATION*');
+        $pluginAvailable = true;
+      }
+
+      if ($this->getConfiguration('checkAutor', 0) && self::arrayContainsWord($author, $keywords)) {
+        log::add(__CLASS__, 'warning', 'one key found in *AUTHOR*');
+        $pluginAvailable = true;
+      }
+
+
+      if ($pluginAvailable) {
         $nb_found++;
         log::add(__CLASS__, 'info', 'Plugin correspondant à un mots clefs :');
 
@@ -173,6 +197,8 @@ class pluginsutiles extends eqLogic {
       } else {
         log::add(__CLASS__, 'debug', $name . ' par ' . $author . ' (' . $cost_txt . ')');
         log::add(__CLASS__, 'debug', 'description : ' . $description);
+        log::add(__CLASS__, 'debug', 'utilisation : ' . $utilisation);
+        log::add(__CLASS__, 'debug', 'author : ' . $author);
       }
     }
 
@@ -539,6 +565,7 @@ class pluginsutilesCmd extends cmd {
 
       case 'removeHistory':
         $eqlogic->setConfiguration('array_historique', '');
+        $eqlogic->setConfiguration('array_IdAlreadyFound', '');
         $eqlogic->save(true);
         break;
 

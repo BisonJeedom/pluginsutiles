@@ -128,7 +128,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 
-							<legend><i class="fas fa-cogs"></i> {{Paramètres spécifiques}}</legend>
+							<legend><i class="fas fa-cogs"></i> {{Paramètres de recherche}}</legend>
 
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Mots-clef}}
@@ -138,6 +138,34 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<textarea class="form-control eqLogicAttr autogrow" data-l1key="configuration" data-l2key="cfg_keywords"></textarea>
 								</div>
 							</div>
+
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{Nom du plugin}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="checkName" checked>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{Description du plugin}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="checkDescription" checked>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{Utilisation du plugin}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="checkUtilisation">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{Auteur}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="checkAutor">
+								</div>
+							</div>
+
+							<legend><i class="fas fa-cogs"></i> {{Paramètres de notification}}</legend>
 
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Alertes dans le centre de message}}</label>
