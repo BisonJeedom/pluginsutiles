@@ -144,6 +144,8 @@ class pluginsutiles extends eqLogic {
       $cost = $plugin['cost'];
       $description = $plugin['description'];
       $utilisation = $plugin['utilization'];
+      $allowVersion = $plugin['allowVersion'];
+      $private = $plugin['private'];
 
       if ($cost == 0) {
         $cost_txt = 'Gratuit';
@@ -188,7 +190,7 @@ class pluginsutiles extends eqLogic {
 
         if ($new == 'Nouveau') {
           $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
-          $array_historique[] = array("date" => date("d/m/Y H:i"), "id" => $id, "name" => $name, "author" => $author); // Ajout dans l'historique
+          $array_historique[] = array("date" => date("d/m/Y H:i"), "id" => $id, "name" => $name, "author" => $author, "private" => $private, "versions" => $allowVersion); // Ajout dans l'historique
           if ($cfg_messagecenter == 1) {
             log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
             message::add(__CLASS__, 'Plugin disponible correspondant aux mots clefs : ' . $name . ' par ' . $author . ' (' . $cost_txt . ')');

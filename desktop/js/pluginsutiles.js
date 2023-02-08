@@ -112,7 +112,13 @@ function addHistory(_history) {
   var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin">';
   tr += '<td><span class="pu_history" data-l1key="date"></span></td>';
   tr += '<td><span class="pu_history" data-l1key="id"></span></td>';
-  tr += '<td><span class="pu_history" data-l1key="name"></span></td>';
+
+  tr += '<td><span class="pu_history" data-l1key="name"></span>';
+  if (_history.private == "1") {
+    tr += '  <i class="fas fa-lock" title="plugin privé"></i>';
+  }
+  tr += '</td > ';
+
   tr += '<td><span class="pu_history" data-l1key="author"></span></td>';
   tr += '</tr>';
 
