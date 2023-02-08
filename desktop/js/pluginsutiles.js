@@ -107,6 +107,29 @@ function addAction(_action, _type) {
   $('#div_' + _type + ' .' + _type + '').last().setValues(_action, '.expressionAttr');
 }
 
+function addHistory(_history) {
+  console.log('add history', _history);
+
+  var tr = '<tr>'; // class="market cursor install" data-market_id="' + _history[1] + '" data-market_type="plugin">';
+  tr += '<td>';
+  tr += _history[0];
+  tr += '</td>';
+  tr += '<td>';
+  tr += _history[1];
+  tr += '</td>';
+  tr += '<td>';
+  tr += _history[2];
+  tr += '</td>';
+  tr += '<td>';
+  tr += _history[3];
+  tr += '</td>';
+  tr += '</tr>';
+
+  $('#table_plugins_info tbody').append(tr);
+
+
+}
+
 
 // Fct core permettant de sauvegarder
 function saveEqLogic(_eqLogic) {
@@ -114,20 +137,27 @@ function saveEqLogic(_eqLogic) {
     _eqLogic.configuration = {};
   }
   _eqLogic.configuration.action_notif = $('#div_action_notif .action_notif').getValues('.expressionAttr');
-  alert("test : " + _eqLogic.configuration.action_notif);
+  // alert("test : " + _eqLogic.configuration.action_notif);
   return _eqLogic;
 }
 
 // fct core permettant de restituer les cmd declarées
 function printEqLogic(_eqLogic) {
-  $('#div_action_notif').empty();
+  // $('#div_action_notif').empty();
 
-  alert("test2");
   if (isset(_eqLogic.configuration)) {
-    if (isset(_eqLogic.configuration.action_notif)) {
-      for (var i in _eqLogic.configuration.action_notif) {
-        alert("test3 : " + i);
-        addAction(_eqLogic.configuration.action_notif[i], 'action_notif');
+    if (isset(_eqLogic.configuration.array_historique)) {
+      var myHistory = _eqLogic.configuration.array_historique;
+      myHistory.sort(function (a, b) {
+        if (a[0] == b[0]) { //si meme date
+          return a[2].localeCompare(b[2]); //on trie par nom ///// a[1] - b[1]; // ==> on trie par ID
+        }
+        return a[0] - b[0]; //sinon on trie par date
+
+      });
+
+      for (var i in myHistory) {
+        addHistory(myHistory[i]);
       }
     }
   }
