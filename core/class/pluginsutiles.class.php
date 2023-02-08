@@ -443,17 +443,6 @@ class pluginsutiles extends eqLogic {
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
-    $info = $this->getCmd(null, 'html');
-    if (!is_object($info)) {
-      $info = new pluginsutilesCmd();
-      $info->setName(__('HTML', __FILE__));
-    }
-    $info->setLogicalId('html');
-    $info->setEqLogic_id($this->getId());
-    $info->setType('info');
-    $info->setSubType('string');
-    $info->save();
-
     $refresh = $this->getCmd(null, 'refresh');
     if (!is_object($refresh)) {
       $refresh = new pluginsutilesCmd();
