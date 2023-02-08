@@ -146,7 +146,7 @@ function printEqLogic(_eqLogic) {
         });
 
         for (var i in myHistory) {
-          console.log("adding : ", myHistory[i]);
+          // console.log("adding : ", myHistory[i]);
           addHistory(myHistory[i]);
         }
       }
