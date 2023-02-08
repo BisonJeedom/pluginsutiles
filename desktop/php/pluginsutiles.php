@@ -22,7 +22,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			<div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
 				<i class="fas fa-wrench"></i>
 				<br>
-				<span>{{Configuration et information}}</span>
+				<span>{{Configuration}}</span>
 			</div>
 		</div>
 

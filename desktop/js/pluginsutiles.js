@@ -112,27 +112,26 @@ function addHistory(_history) {
 
   var tr = '<tr class="market cursor install" data-market_id="' + _history[1] + '" data-market_type="plugin">';
   tr += '<td>';
-  tr += _history[0];
+  tr += _history["date"];
   tr += '</td>';
   tr += '<td>';
-  tr += _history[1];
+  tr += _history["id"];
   tr += '</td>';
   tr += '<td>';
-  tr += _history[2];
+  tr += _history["name"];
   tr += '</td>';
   tr += '<td>';
-  tr += _history[3];
+  tr += _history["author"];
   tr += '</td>';
   tr += '</tr>';
 
   $('#table_plugins_info tbody').append(tr);
-
-
 }
 
 
 // Fct core permettant de sauvegarder
 function saveEqLogic(_eqLogic) {
+  $('#table_plugins_info tbody').empty();
   if (!isset(_eqLogic.configuration)) {
     _eqLogic.configuration = {};
   }
@@ -143,19 +142,16 @@ function saveEqLogic(_eqLogic) {
 
 // fct core permettant de restituer les cmd declarées
 function printEqLogic(_eqLogic) {
-  // $('#div_action_notif').empty();
-
+  $('#table_plugins_info tbody').empty();
   if (isset(_eqLogic.configuration)) {
     if (isset(_eqLogic.configuration.array_historique)) {
       var myHistory = _eqLogic.configuration.array_historique;
       myHistory.sort(function (a, b) {
-        if (a[0] == b[0]) { //si meme date
-          return a[2].localeCompare(b[2]); //on trie par nom ///// a[1] - b[1]; // ==> on trie par ID
+        if (new Date(a["date"]) == new Date(b["date"])) { //si meme date
+          return a["name"].localeCompare(b["name"]); //on trie par nom ///// a[1] - b[1]; // ==> on trie par ID
         }
-        return a[0] - b[0]; //sinon on trie par date
-
+        return new Date(b["date"]) - new Date(a["date"]); //sinon on trie par date
       });
-
       for (var i in myHistory) {
         addHistory(myHistory[i]);
       }
