@@ -108,24 +108,16 @@ function addAction(_action, _type) {
 }
 
 function addHistory(_history) {
-  console.log('add history', _history);
 
-  var tr = '<tr class="market cursor install" data-market_id="' + _history[1] + '" data-market_type="plugin">';
-  tr += '<td>';
-  tr += _history["date"];
-  tr += '</td>';
-  tr += '<td>';
-  tr += _history["id"];
-  tr += '</td>';
-  tr += '<td>';
-  tr += _history["name"];
-  tr += '</td>';
-  tr += '<td>';
-  tr += _history["author"];
-  tr += '</td>';
+  var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin">';
+  tr += '<td><span class="pu_history" data-l1key="date"></span></td>';
+  tr += '<td><span class="pu_history" data-l1key="id"></span></td>';
+  tr += '<td><span class="pu_history" data-l1key="name"></span></td>';
+  tr += '<td><span class="pu_history" data-l1key="author"></span></td>';
   tr += '</tr>';
 
   $('#table_plugins_info tbody').append(tr);
+  $('#table_plugins_info tbody tr').last().setValues(_history, '.pu_history');
 }
 
 
