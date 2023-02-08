@@ -104,9 +104,9 @@ class pluginsutiles extends eqLogic {
     log::add(__CLASS__, 'debug', 'START ' . $eqLogicName);
 
     // Récupération des mots clefs
-    $cfg_keywords = $this->getConfiguration("cfg_keywords", 0);
+    $cfg_keywords = $this->getConfiguration("cfg_keywords", null);
     log::add(__CLASS__, 'info', 'Liste des mots clefs : ' . $cfg_keywords);
-    $keywords = explode(';', $cfg_keywords);
+    $keywords = array_filter(explode(';', $cfg_keywords));
 
     // Récupération des ID de plugins déjà trouvés et signalés
     $array_IdAlreadyFound = $this->getConfiguration("array_IdAlreadyFound");
@@ -156,24 +156,26 @@ class pluginsutiles extends eqLogic {
       }
 
       $pluginAvailable = false;
-      if ($this->getConfiguration('checkName', 1) && self::arrayContainsWord($name, $keywords)) {
-        // log::add(__CLASS__, 'warning', 'one key found in *NAME*');
-        $pluginAvailable = true;
-      }
+      if (count($keywords) > 0) {  // on fait la recherche si seulement on a 1 mot clé
+        if ($this->getConfiguration('checkName', 1) && self::arrayContainsWord($name, $keywords)) {
+          // log::add(__CLASS__, 'warning', 'one key found in *NAME*');
+          $pluginAvailable = true;
+        }
 
-      if ($this->getConfiguration('checkDescription', 1) && self::arrayContainsWord($description, $keywords)) {
-        // log::add(__CLASS__, 'warning', 'one key found in *DESC*');
-        $pluginAvailable = true;
-      }
+        if ($this->getConfiguration('checkDescription', 1) && self::arrayContainsWord($description, $keywords)) {
+          // log::add(__CLASS__, 'warning', 'one key found in *DESC*');
+          $pluginAvailable = true;
+        }
 
-      if ($this->getConfiguration('checkUtilisation', 0) && self::arrayContainsWord($utilisation, $keywords)) {
-        // log::add(__CLASS__, 'warning', 'one key found in *UTILISATION*');
-        $pluginAvailable = true;
-      }
+        if ($this->getConfiguration('checkUtilisation', 0) && self::arrayContainsWord($utilisation, $keywords)) {
+          // log::add(__CLASS__, 'warning', 'one key found in *UTILISATION*');
+          $pluginAvailable = true;
+        }
 
-      if ($this->getConfiguration('checkAutor', 0) && self::arrayContainsWord($author, $keywords)) {
-        // log::add(__CLASS__, 'warning', 'one key found in *AUTHOR*');
-        $pluginAvailable = true;
+        if ($this->getConfiguration('checkAutor', 0) && self::arrayContainsWord($author, $keywords)) {
+          // log::add(__CLASS__, 'warning', 'one key found in *AUTHOR*');
+          $pluginAvailable = true;
+        }
       }
 
       $item_detail = array(
@@ -458,18 +460,32 @@ class pluginsutiles extends eqLogic {
 
   // Fonction exécutée automatiquement avant la mise à jour de l'équipement
   public function preUpdate() {
-    $cfg_keywords = $this->getConfiguration('cfg_keywords');
-    log::add(__CLASS__, 'info', 'Modification des mots clefs : ' . $cfg_keywords);
-    config::save('fullrefresh', 1, __CLASS__); // Passage à 1 du "fullrefesh" global suite au changement de la liste des mots clefs sur un équipement
+    $cfg_keywords = $this->getConfiguration('cfg_keywords', null);
+    $cfg_keywords_prev = $this->getConfiguration('cfg_keywords_previous', null);
 
-    $array_historique = $this->getConfiguration('array_historique');
-    if (empty($array_historique)) {
-      $array_historique = array();
+    if ($cfg_keywords_prev == $cfg_keywords  && $cfg_keywords  == null) {
+      log::add(__CLASS__, 'debug', 'keyword null - initialisation');
+      config::save('fullrefresh', 1, __CLASS__); // Passage à 1 du "fullrefesh" global suite au changement de la liste des mots clefs sur un équipement
+      return;
     }
 
-    $array_historique[] = array("date" => date("d/m/Y H:i"), "id" => '', "name" => 'Mise à jour des mots clefs', "author" => ''); // Utilisation de l'historique un peu adapté pour informer du changement de mots-clefs
-    $this->setConfiguration('array_historique', $array_historique);
-    $this->save(true);
+    $array_historique = $this->getConfiguration('array_historique', array());
+
+    if ($cfg_keywords_prev != $cfg_keywords) {
+      log::add(__CLASS__, 'info', 'Modification des mots clefs : >' . $cfg_keywords . '<');
+      log::add(__CLASS__, 'info', 'Anciens mots clefs : >' . $cfg_keywords_prev . '<');
+
+      config::save('fullrefresh', 1, __CLASS__); // Passage à 1 du "fullrefesh" global suite au changement de la liste des mots clefs sur un équipement
+
+      $array_historique[] = array("date" => date("d/m/Y H:i"), "id" => '', "name" => 'Mise à jour des mots clefs'); // Utilisation de l'historique un peu adapté pour informer du changement de mots-clefs
+      $this->setConfiguration('array_historique', $array_historique);
+
+      $this->setConfiguration('cfg_keywords_previous', $cfg_keywords);
+
+      $this->save(true);
+    } else {
+      // log::add(__CLASS__, 'info', 'AUCUN chgt de keys');
+    }
   }
 
   // Fonction exécutée automatiquement après la mise à jour de l'équipement
