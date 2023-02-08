@@ -123,7 +123,6 @@ function addHistory(_history) {
 
 // Fct core permettant de sauvegarder
 function saveEqLogic(_eqLogic) {
-  $('#table_plugins_info tbody').empty();
   if (!isset(_eqLogic.configuration)) {
     _eqLogic.configuration = {};
   }
