@@ -175,12 +175,15 @@ class pluginsutiles extends eqLogic {
 
     if ($error == 0) {
       log::add(__CLASS__, 'debug', 'Mise à jour des plugins signalés : ' . json_encode($array_IdAlreadyFound));
-      config::save('array_IdAlreadyFound', $array_IdAlreadyFound, __CLASS__);
+      //config::save('array_IdAlreadyFound', $array_IdAlreadyFound, __CLASS__);
+      $this->setConfiguration('array_IdAlreadyFound', $array_IdAlreadyFound);
 
       log::add(__CLASS__, 'debug', 'Historique : ' . json_encode($array_historique));
-      config::save('array_historique', $array_historique, __CLASS__);
+      //config::save('array_historique', $array_historique, __CLASS__);
+      $this->setConfiguration('array_historique', $array_historique);
 
-      config::save('fullrefresh', 0, __CLASS__);
+      //config::save('fullrefresh', 0, __CLASS__);
+      $this->setConfiguration('fullrefresh', 0);
     }
 
     log::add(__CLASS__, 'info', 'Recherche terminée parmis ' . $nb_plugins . ' plugins : ' . $nb_found . ' plugins trouvé(s) et correspondant aux mots clefs');
@@ -520,7 +523,7 @@ class pluginsutilesCmd extends cmd {
         //$eqlogic->checkAndUpdateCmd('html', $info);
         break;
       default:
-        //log
+        log::add(__CLASS__, 'debug', 'Erreur durant execute');
     }
   }
 
