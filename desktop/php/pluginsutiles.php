@@ -184,10 +184,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							<table id="table_plugins_info" class="table table-bordered table-condensed">
 								<thead>
 									<tr>
-										<th style="width: 100px;">{{Date}}</th>
-										<th style="width: 50px;">{{Id}}</th>
+										<th style="width: 70px;">{{Date}}</th>
+										<th style="width: 20px;">{{Id}}</th>
 										<th style="width: 200px;">{{Nom}}</th>
-										<th style="width: 50px;">{{Auteur}}</th>
+										<th style="width: 100px;">{{Auteur}}</th>
+										<th style="width: 50px;">{{Version}}</th>
 									</tr>
 								</thead>
 								<tbody class="cmd_pluginsInfo">

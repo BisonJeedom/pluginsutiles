@@ -120,6 +120,13 @@ function addHistory(_history) {
   tr += '</td > ';
 
   tr += '<td><span class="pu_history" data-l1key="author"></span></td>';
+  tr += '<td>';
+  if (_history.id != '') {
+    color = (_history.stable) ? 'success' : 'warning';
+    title = (_history.stable) ? 'stable' : 'beta';
+    tr += '<span><sub style="font-size:40px" class="' + color + '" title="plugin en version ' + title + '">&#8226</sub></span>';
+  }
+  tr += '</td>';
   tr += '</tr>';
 
   $('#table_plugins_info tbody').append(tr);
