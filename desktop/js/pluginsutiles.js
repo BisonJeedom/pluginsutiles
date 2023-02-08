@@ -137,14 +137,18 @@ function printEqLogic(_eqLogic) {
   if (isset(_eqLogic.configuration)) {
     if (isset(_eqLogic.configuration.array_historique)) {
       var myHistory = _eqLogic.configuration.array_historique;
-      myHistory.sort(function (a, b) {
-        if (new Date(a["date"]) == new Date(b["date"])) { //si meme date
-          return a["name"].localeCompare(b["name"]); //on trie par nom ///// a[1] - b[1]; // ==> on trie par ID
+      if (myHistory.length > 0) {
+        myHistory.sort(function (a, b) {
+          if (new Date(a["date"]) == new Date(b["date"])) { //si meme date
+            return a["name"].localeCompare(b["name"]); //on trie par nom ///// a[1] - b[1]; // ==> on trie par ID
+          }
+          return new Date(b["date"]) - new Date(a["date"]); //sinon on trie par date
+        });
+
+        for (var i in myHistory) {
+          console.log("adding : ", myHistory[i]);
+          addHistory(myHistory[i]);
         }
-        return new Date(b["date"]) - new Date(a["date"]); //sinon on trie par date
-      });
-      for (var i in myHistory) {
-        addHistory(myHistory[i]);
       }
     }
   }
