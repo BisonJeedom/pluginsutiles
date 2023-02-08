@@ -126,7 +126,7 @@ function addHistory(_history) {
 
   //private
   tr += '<td>';
-  tr += (_history.private == "1") ? '<i class="fas fa-lock" title="plugin privé"></i>' : '';
+  tr += (_history.private) ? '<i class="fas fa-lock" title="plugin privé"></i>' : '';
   tr += '</td>';
 
   // cost

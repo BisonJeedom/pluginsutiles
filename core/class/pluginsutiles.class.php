@@ -147,7 +147,7 @@ class pluginsutiles extends eqLogic {
       $utilisation = $plugin['utilization'];
       $beta = ($plugin['status']['beta'] == "1") ?? false;
       $stable = ($plugin['status']['stable'] == "1") ?? false;
-      $private = $plugin['private'];
+      $private = $plugin['private'] == "1";
 
       if ($cost == 0) {
         $cost_txt = 'Gratuit';
