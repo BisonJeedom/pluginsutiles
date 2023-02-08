@@ -110,7 +110,7 @@ function addAction(_action, _type) {
 function addHistory(_history) {
   console.log('add history', _history);
 
-  var tr = '<tr>'; // class="market cursor install" data-market_id="' + _history[1] + '" data-market_type="plugin">';
+  var tr = '<tr class="market cursor install" data-market_id="' + _history[1] + '" data-market_type="plugin">';
   tr += '<td>';
   tr += _history[0];
   tr += '</td>';
@@ -163,9 +163,19 @@ function printEqLogic(_eqLogic) {
   }
 }
 
-$('.market').on('click', function () {
-  $('#md_modal2').dialog({ title: "{{Market}}" });
-  $('#md_modal2').load('index.php?v=d&modal=update.display&type=' + $(this).attr('data-market_type') + '&id=' + $(this).attr('data-market_id') + '&repo=market').dialog('open');
+$('body').off('click', '.pluginsutiles .market').on('click', '.pluginsutiles .market', function () {
+  if ($(".pluginsutiles #marketModal").length == 0) {
+    $('.pluginsutiles').append('<div id="marketModal"></div>');
+  }
+  $('#marketModal').dialog({
+    title: "{{Market}}",
+    closeText: '',
+    autoOpen: false,
+    modal: true,
+    width: 1250,
+    height: 0.8 * $(window).height()
+  });
+  $('#marketModal').load('index.php?v=d&modal=update.display&type=' + $(this).attr('data-market_type') + '&id=' + $(this).attr('data-market_id') + '&repo=market').dialog('open');
 });
 
 

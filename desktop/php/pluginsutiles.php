@@ -8,7 +8,7 @@ sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 ?>
 
-<div class="row row-overflow">
+<div class="row row-overflow pluginsutiles">
 	<!-- Page d'accueil du plugin -->
 	<div class="col-xs-12 eqLogicThumbnailDisplay">
 		<legend><i class="fas fa-cog"></i> {{Gestion}}</legend>
