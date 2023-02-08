@@ -75,7 +75,7 @@ class pluginsutiles extends eqLogic {
   }
   */
 
-  public function refreshMarket() {
+  public static function refreshMarket() {
     $fullrefresh = config::byKey('fullrefresh', __CLASS__);
     if ($fullrefresh == 1) {
       $timeState = null;
@@ -503,7 +503,7 @@ class pluginsutilesCmd extends cmd {
   public function execute($_options = array()) {
     //config::remove('array_IdAlreadyFound', 'pluginsutiles');
     //config::remove('array_historique', 'pluginsutiles');
-
+    /** @var pluginsutiles $eqlogic */
     $eqlogic = $this->getEqLogic();
     switch ($this->getLogicalId()) {
       case 'refresh':
@@ -511,6 +511,9 @@ class pluginsutilesCmd extends cmd {
         $info = $eqlogic->search($markets);
         //$info = $eqlogic->refreshFromMarket(); 
         //$eqlogic->checkAndUpdateCmd('html', $info);
+        break;
+      default:
+        //log
     }
   }
 
