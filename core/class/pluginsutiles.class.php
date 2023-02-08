@@ -376,6 +376,7 @@ class pluginsutiles extends eqLogic {
   public static function cronDaily() {
     sleep(rand(0, 60));
     $markets = pluginsutiles::refreshMarket();
+    /** @var pluginsutiles $eqLogic */
     foreach (eqLogic::byType('pluginsutiles') as $eqLogic) {
       if ($eqLogic->getIsEnable()) {
         $info = $eqLogic->search($markets);
@@ -386,6 +387,31 @@ class pluginsutiles extends eqLogic {
     }
   }
 
+  public static function addCronCheckMarket() {
+    $cron = cron::byClassAndFunction(__CLASS__, 'refreshPluginsFromMarket');
+    if (!is_object($cron)) {
+      $cron = new cron();
+      $cron->setClass(__CLASS__);
+      $cron->setFunction('refreshPluginsFromMarket');
+    }
+    $cron->setEnable(1);
+    $cron->setDeamon(0);
+    $cron->setSchedule('0 ' . rand(0, 4) . ' * * *');
+    $cron->setTimeout(5);
+    $cron->save();
+  }
+
+  public static function removeCronItems() {
+    try {
+      $crons = cron::searchClassAndFunction(__CLASS__, 'refreshPluginsFromMarket');
+      if (is_array($crons)) {
+        foreach ($crons as $cron) {
+          $cron->remove();
+        }
+      }
+    } catch (Exception $e) {
+    }
+  }
 
   /*     * *********************Méthodes d'instance************************* */
 

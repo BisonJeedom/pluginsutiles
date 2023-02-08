@@ -19,12 +19,15 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 // Fonction exécutée automatiquement après l'installation du plugin
 function pluginsutiles_install() {
+    pluginsutiles::addCronCheckMarket();
 }
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
 function pluginsutiles_update() {
+    pluginsutiles::addCronCheckMarket();
 }
 
 // Fonction exécutée automatiquement après la suppression du plugin
 function pluginsutiles_remove() {
+    pluginsutiles::removeCronItems();
 }
