@@ -142,6 +142,7 @@ class pluginsutiles extends eqLogic {
       $name = $plugin['name'];
       $author = $plugin['author'];
       $cost = $plugin['cost'];
+      $realcost = $plugin['realcost'];
       $description = $plugin['description'];
       $utilisation = $plugin['utilization'];
       $beta = ($plugin['status']['beta'] == "1") ?? false;
@@ -156,22 +157,22 @@ class pluginsutiles extends eqLogic {
 
       $pluginAvailable = false;
       if ($this->getConfiguration('checkName', 1) && self::arrayContainsWord($name, $keywords)) {
-        log::add(__CLASS__, 'warning', 'one key found in *NAME*');
+        // log::add(__CLASS__, 'warning', 'one key found in *NAME*');
         $pluginAvailable = true;
       }
 
       if ($this->getConfiguration('checkDescription', 1) && self::arrayContainsWord($description, $keywords)) {
-        log::add(__CLASS__, 'warning', 'one key found in *DESC*');
+        // log::add(__CLASS__, 'warning', 'one key found in *DESC*');
         $pluginAvailable = true;
       }
 
       if ($this->getConfiguration('checkUtilisation', 0) && self::arrayContainsWord($utilisation, $keywords)) {
-        log::add(__CLASS__, 'warning', 'one key found in *UTILISATION*');
+        // log::add(__CLASS__, 'warning', 'one key found in *UTILISATION*');
         $pluginAvailable = true;
       }
 
       if ($this->getConfiguration('checkAutor', 0) && self::arrayContainsWord($author, $keywords)) {
-        log::add(__CLASS__, 'warning', 'one key found in *AUTHOR*');
+        // log::add(__CLASS__, 'warning', 'one key found in *AUTHOR*');
         $pluginAvailable = true;
       }
 
