@@ -372,9 +372,9 @@ class pluginsutiles extends eqLogic {
 
   /*
   * Fonction exécutée automatiquement tous les jours par Jeedom
-  */
   public static function cronDaily() {
   }
+  */
 
   public static function addCronCheckMarket() {
     $cron = cron::byClassAndFunction(__CLASS__, 'refreshPluginsFromMarket');
