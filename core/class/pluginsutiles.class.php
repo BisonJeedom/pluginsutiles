@@ -533,8 +533,8 @@ class pluginsutilesCmd extends cmd {
         $markets = $eqlogic->refreshMarket();
         $info = $eqlogic->search($markets);
         log::add(__CLASS__, 'debug', 'setConf array_historique data ==> ' . json_encode($info));
-        $this->setConfiguration('array_historique', $info);
-        $this->save(true);
+        $eqlogic->setConfiguration('array_historique', $info);
+        $eqlogic->save(true);
         break;
 
       case 'removeHistory':
