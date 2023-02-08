@@ -131,12 +131,12 @@ function addHistory(_history) {
 
   // cost
   tr += '<td>';
-  tr += (_history.cost && _history.cost != 0) ? '<i class="icon jeedom2-tirelire1" title="plugin payant : ' + _history.cost + ' €" style="color:red"></i>' : '';
+  tr += (_history.cost && _history.cost != 0) ? '<i class="icon jeedom2-tirelire1" title="plugin payant : ' + _history.cost + ' €" style="color:var(--al-danger-color)"></i>' : '';
   tr += '</td>';
 
   // discount
   tr += '<td>';
-  tr += (_history.discount) ? '<i class="fas fa-tags" title="plugin en promo ! ancien prix : ' + _history.realcost + ' €" style="color:blue"></i>' : '';
+  tr += (_history.discount) ? '<i class="fas fa-tags" title="plugin en promo ! ancien prix : ' + _history.realcost + ' €" style="color:var(--al-info-color)"></i>' : '';
   tr += '</td>';
 
   tr += '</tr>';
