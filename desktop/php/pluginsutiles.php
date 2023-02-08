@@ -84,7 +84,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 				<!-- Paramètres généraux et spécifiques de l'équipement -->
 				<form class="form-horizontal">
 					<fieldset>
-						<div class="col-lg-6">
+						<div class="col-lg-5">
 							<legend><i class="fas fa-wrench"></i> {{Paramètres généraux}}</legend>
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Nom de l'équipement}}</label>
@@ -165,7 +165,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 
-							<legend><i class="fas fa-cogs"></i> {{Paramètres de notification}}</legend>
+							<legend><i class="fas fa-dice"></i> {{Autre recherche}}</legend>
+
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{Afficher les plugins en promo}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="checkDiscount">
+								</div>
+							</div>
+
+							<legend><i class="fas fa-bullhorn"></i> {{Paramètres de notification}}</legend>
 
 							<div class="form-group">
 								<label class="col-sm-4 control-label">{{Alertes dans le centre de message}}</label>
@@ -178,7 +187,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
 						<!-- Partie droite de l'onglet "Équipement" -->
 						<!-- Affiche un champ de commentaire par défaut mais vous pouvez y mettre ce que vous voulez -->
-						<div class="col-lg-6">
+						<div class="col-lg-7">
 							<legend><i class="fas fa-info"></i> {{Informations}}</legend>
 
 							<table id="table_plugins_info" class="table table-bordered table-condensed">
@@ -188,7 +197,10 @@ $eqLogics = eqLogic::byType($plugin->getId());
 										<th style="width: 20px;">{{Id}}</th>
 										<th style="width: 200px;">{{Nom}}</th>
 										<th style="width: 100px;">{{Auteur}}</th>
-										<th style="width: 50px;">{{Version}}</th>
+										<th style="width: 20px;"></th>
+										<th style="width: 20px;"></th>
+										<th style="width: 20px;"></th>
+										<th style="width: 20px;"></th>
 									</tr>
 								</thead>
 								<tbody class="cmd_pluginsInfo">

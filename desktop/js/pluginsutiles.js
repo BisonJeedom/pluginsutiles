@@ -112,14 +112,10 @@ function addHistory(_history) {
   var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin">';
   tr += '<td><span class="pu_history" data-l1key="date"></span></td>';
   tr += '<td><span class="pu_history" data-l1key="id"></span></td>';
-
   tr += '<td><span class="pu_history" data-l1key="name"></span>';
-  if (_history.private == "1") {
-    tr += '  <i class="fas fa-lock" title="plugin privé"></i>';
-  }
-  tr += '</td > ';
-
   tr += '<td><span class="pu_history" data-l1key="author"></span></td>';
+
+  // version
   tr += '<td>';
   if (_history.id != '') {
     color = (_history.stable) ? 'success' : 'warning';
@@ -127,6 +123,22 @@ function addHistory(_history) {
     tr += '<span><sub style="font-size:40px" class="' + color + '" title="plugin en version ' + title + '">&#8226</sub></span>';
   }
   tr += '</td>';
+
+  //private
+  tr += '<td>';
+  tr += (_history.private == "1") ? '<i class="fas fa-lock" title="plugin privé"></i>' : '';
+  tr += '</td>';
+
+  // cost
+  tr += '<td>';
+  tr += (_history.cost && _history.cost != 0) ? '<i class="icon jeedom2-tirelire1" title="plugin payant : ' + _history.cost + ' €" style="color:red"></i>' : '';
+  tr += '</td>';
+
+  // discount
+  tr += '<td>';
+  tr += (_history.discount) ? '<i class="fas fa-tags" title="plugin en promo ! ancien prix : ' + _history.realcost + ' €" style="color:blue"></i>' : '';
+  tr += '</td>';
+
   tr += '</tr>';
 
   $('#table_plugins_info tbody').append(tr);

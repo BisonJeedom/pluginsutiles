@@ -176,6 +176,20 @@ class pluginsutiles extends eqLogic {
         $pluginAvailable = true;
       }
 
+      $item_detail = array(
+        "date" => date("d/m/Y H:i"),
+        "id" => $id, "name" => $name,
+        "author" => $author, "private" => $private,
+        "beta" => $beta, "stable" => $stable,
+        "cost" => $cost, "realcost" => $realcost
+      ); // Ajout dans l'historique
+
+
+      if ($this->getConfiguration('checkDiscount', 0) && ($realcost != $cost)) {
+        log::add(__CLASS__, 'info', 'Plugin en promo :' . $name);
+        $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
+        $array_historique[] = array_merge($item_detail, array("discount" => true));
+      }
 
       if ($pluginAvailable) {
         $nb_found++;
@@ -192,7 +206,7 @@ class pluginsutiles extends eqLogic {
 
         if ($new == 'Nouveau') {
           $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
-          $array_historique[] = array("date" => date("d/m/Y H:i"), "id" => $id, "name" => $name, "author" => $author, "private" => $private, "beta" => $beta, "stable" => $stable); // Ajout dans l'historique
+          $array_historique[] = $item_detail;
           if ($cfg_messagecenter == 1) {
             log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
             message::add(__CLASS__, 'Plugin disponible correspondant aux mots clefs : ' . $name . ' par ' . $author . ' (' . $cost_txt . ')');
