@@ -174,6 +174,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{Plugins en beta uniquement}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkBetaOnly">
+								</div>
+							</div>
+
 							<legend><i class="fas fa-bullhorn"></i> {{Paramètres de notification}}</legend>
 
 							<div class="form-group">

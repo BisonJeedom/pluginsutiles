@@ -194,6 +194,11 @@ class pluginsutiles extends eqLogic {
           // log::add(__CLASS__, 'warning', 'one key found in *AUTHOR*');
           $pluginAvailable = true;
         }
+
+        if ($this->getConfiguration('cfg_checkBetaOnly', 0) && $beta == 1 && $stable == 0) {
+          // log::add(__CLASS__, 'warning', '*Beta Only*');
+          $pluginAvailable = true;
+        }
       }
 
       $item_detail = array(
@@ -213,7 +218,7 @@ class pluginsutiles extends eqLogic {
 
       if ($pluginAvailable) {
         $nb_found++;
-        log::add(__CLASS__, 'info', 'Plugin correspondant à un mots clefs :');
+        log::add(__CLASS__, 'info', 'Plugin correspondant aux critères :');
 
         if (array_search($id, $array_IdAlreadyFound) === false) {
           $new = 'Nouveau'; // id non trouvé dans le tableau
@@ -221,14 +226,17 @@ class pluginsutiles extends eqLogic {
           $new = 'Ancien'; // id déjà présent dans le tableau
         }
 
-        log::add(__CLASS__, 'info', '-> [' . $new . '] ' . $name . ' par ' . $author . ' (' . $cost_txt . ')');
+        $msg_beta_only = ($beta == 1 && $stable == 0) ? ' [Beta] ' : '';
+
+        log::add(__CLASS__, 'info', '-> [' . $new . '] ' . $name . ' par ' . $author . $msg_beta_only . ' (' . $cost_txt . ')');
         log::add(__CLASS__, 'info', '-> [' . $new . '] description : ' . $description);
+        log::add(__CLASS__, 'info', '-> [' . $new . '] utilisation : ' . $utilisation);
 
         if ($new == 'Nouveau') {
           $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
           $array_historique[] = $item_detail;
 
-          $msg = 'Plugin disponible correspondant aux mots clefs : ' . $name . ' par ' . $author . ' (' . $cost_txt . ')';
+          $msg = 'Plugin disponible correspondant aux critères : ' . $name . ' par ' . $author . $msg_beta_only . ' (' . $cost_txt . ')';
           if ($cfg_messagecenter == 1) {
             log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
             message::add(__CLASS__, $msg);
@@ -257,7 +265,6 @@ class pluginsutiles extends eqLogic {
         log::add(__CLASS__, 'debug', $name . ' par ' . $author . ' (' . $cost_txt . ')');
         log::add(__CLASS__, 'debug', 'description : ' . $description);
         log::add(__CLASS__, 'debug', 'utilisation : ' . $utilisation);
-        log::add(__CLASS__, 'debug', 'author : ' . $author);
       }
     }
 
