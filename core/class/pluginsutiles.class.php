@@ -241,8 +241,10 @@ class pluginsutiles extends eqLogic {
 
               /** @var cmd $notifObj */
               $notifObj = cmd::byId($notifCmdId);
-              if (!is_object($notifObj)) continue;
-
+              if (!is_object($notifObj)) {
+                log::add(__CLASS__, 'error', 'La commande de notification n\'existe pas');
+                continue;
+              }
               $notifDetail = $item_detail;
               $notifDetail['defaultMsg'] = $msg;
               $titleNotif = $this->replaceCustomData($notif['options']['title'] ?? 'Nouveaux plugins trouvés !', $notifDetail);
