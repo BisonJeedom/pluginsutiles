@@ -108,30 +108,46 @@ function addAction(_action, _type) {
 }
 
 function addHistory(_history) {
-  console.log('add history', _history);
 
-  var tr = '<tr class="market cursor install" data-market_id="' + _history[1] + '" data-market_type="plugin">';
+  var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin">';
+  tr += '<td><span class="pu_history" data-l1key="date"></span></td>';
+  tr += '<td><span class="pu_history" data-l1key="id"></span></td>';
+  tr += '<td><span class="pu_history" data-l1key="name"></span>';
+  tr += '<td><span class="pu_history" data-l1key="author"></span></td>';
+
+  // version
   tr += '<td>';
-  tr += _history["date"];
+  if (_history.id != '') {
+    color = (_history.stable) ? 'success' : 'warning';
+    title = (_history.stable) ? 'stable' : 'beta';
+    tr += '<span><sub style="font-size:40px" class="' + color + '" title="plugin en version ' + title + '">&#8226</sub></span>';
+  }
   tr += '</td>';
+
+  //private
   tr += '<td>';
-  tr += _history["id"];
+  tr += (_history.private) ? '<i class="fas fa-lock" title="plugin privé"></i>' : '';
   tr += '</td>';
+
+  // cost
   tr += '<td>';
-  tr += _history["name"];
+  tr += (_history.cost && _history.cost != 0) ? '<i class="icon jeedom2-tirelire1" title="plugin payant : ' + _history.cost + ' €" style="color:var(--al-danger-color)"></i>' : '';
   tr += '</td>';
+
+  // discount
   tr += '<td>';
-  tr += _history["author"];
+  tr += (_history.discount) ? '<i class="fas fa-tags" title="plugin en promo ! ancien prix : ' + _history.realcost + ' €" style="color:var(--al-info-color)"></i>' : '';
   tr += '</td>';
+
   tr += '</tr>';
 
   $('#table_plugins_info tbody').append(tr);
+  $('#table_plugins_info tbody tr').last().setValues(_history, '.pu_history');
 }
 
 
 // Fct core permettant de sauvegarder
 function saveEqLogic(_eqLogic) {
-  $('#table_plugins_info tbody').empty();
   if (!isset(_eqLogic.configuration)) {
     _eqLogic.configuration = {};
   }
@@ -146,14 +162,18 @@ function printEqLogic(_eqLogic) {
   if (isset(_eqLogic.configuration)) {
     if (isset(_eqLogic.configuration.array_historique)) {
       var myHistory = _eqLogic.configuration.array_historique;
-      myHistory.sort(function (a, b) {
-        if (new Date(a["date"]) == new Date(b["date"])) { //si meme date
-          return a["name"].localeCompare(b["name"]); //on trie par nom ///// a[1] - b[1]; // ==> on trie par ID
+      if (myHistory.length > 0) {
+        myHistory.sort(function (a, b) {
+          if (new Date(a["date"]) == new Date(b["date"])) { //si meme date
+            return a["name"].localeCompare(b["name"]); //on trie par nom ///// a[1] - b[1]; // ==> on trie par ID
+          }
+          return new Date(b["date"]) - new Date(a["date"]); //sinon on trie par date
+        });
+
+        for (var i in myHistory) {
+          // console.log("adding : ", myHistory[i]);
+          addHistory(myHistory[i]);
         }
-        return new Date(b["date"]) - new Date(a["date"]); //sinon on trie par date
-      });
-      for (var i in myHistory) {
-        addHistory(myHistory[i]);
       }
     }
   }

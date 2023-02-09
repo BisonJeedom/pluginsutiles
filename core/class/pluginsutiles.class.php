@@ -104,9 +104,9 @@ class pluginsutiles extends eqLogic {
     log::add(__CLASS__, 'debug', 'START ' . $eqLogicName);
 
     // Récupération des mots clefs
-    $cfg_keywords = $this->getConfiguration("cfg_keywords", 0);
+    $cfg_keywords = $this->getConfiguration("cfg_keywords", null);
     log::add(__CLASS__, 'info', 'Liste des mots clefs : ' . $cfg_keywords);
-    $keywords = explode(';', $cfg_keywords);
+    $keywords = array_filter(explode(';', $cfg_keywords));
 
     // Récupération des ID de plugins déjà trouvés et signalés
     $array_IdAlreadyFound = $this->getConfiguration("array_IdAlreadyFound");
@@ -151,6 +151,7 @@ class pluginsutiles extends eqLogic {
     */
 
     foreach ($_markets as $plugin) {
+      // log::add(__CLASS__, 'debug', 'receive plugin =>' . json_encode($plugin));
       $nb_plugins++;
       $error = 0;
 
@@ -158,7 +159,12 @@ class pluginsutiles extends eqLogic {
       $name = $plugin['name'];
       $author = $plugin['author'];
       $cost = $plugin['cost'];
+      $realcost = $plugin['realcost'];
       $description = $plugin['description'];
+      $utilisation = $plugin['utilization'];
+      $beta = ($plugin['status']['beta'] == "1") ?? false;
+      $stable = ($plugin['status']['stable'] == "1") ?? false;
+      $private = $plugin['private'] == "1";
 
       if ($cost == 0) {
         $cost_txt = 'Gratuit';
@@ -166,7 +172,45 @@ class pluginsutiles extends eqLogic {
         $cost_txt = $cost . '€';
       }
 
-      if (self::arrayContainsWord($description, $keywords)) {
+      $pluginAvailable = false;
+      if (count($keywords) > 0) {  // on fait la recherche si seulement on a 1 mot clé
+        if ($this->getConfiguration('checkName', 1) && self::arrayContainsWord($name, $keywords)) {
+          // log::add(__CLASS__, 'warning', 'one key found in *NAME*');
+          $pluginAvailable = true;
+        }
+
+        if ($this->getConfiguration('checkDescription', 1) && self::arrayContainsWord($description, $keywords)) {
+          // log::add(__CLASS__, 'warning', 'one key found in *DESC*');
+          $pluginAvailable = true;
+        }
+
+        if ($this->getConfiguration('checkUtilisation', 0) && self::arrayContainsWord($utilisation, $keywords)) {
+          // log::add(__CLASS__, 'warning', 'one key found in *UTILISATION*');
+          $pluginAvailable = true;
+        }
+
+        if ($this->getConfiguration('checkAutor', 0) && self::arrayContainsWord($author, $keywords)) {
+          // log::add(__CLASS__, 'warning', 'one key found in *AUTHOR*');
+          $pluginAvailable = true;
+        }
+      }
+
+      $item_detail = array(
+        "date" => date("d/m/Y H:i"),
+        "id" => $id, "name" => $name,
+        "author" => $author, "private" => $private,
+        "beta" => $beta, "stable" => $stable,
+        "cost" => $cost, "realcost" => $realcost
+      ); // Ajout dans l'historique
+
+
+      if ($this->getConfiguration('checkDiscount', 0) && ($realcost != $cost)) {
+        log::add(__CLASS__, 'info', 'Plugin en promo :' . $name);
+        $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
+        $array_historique[] = array_merge($item_detail, array("discount" => true));
+      }
+
+      if ($pluginAvailable) {
         $nb_found++;
         log::add(__CLASS__, 'info', 'Plugin correspondant à un mots clefs :');
 
@@ -181,7 +225,7 @@ class pluginsutiles extends eqLogic {
 
         if ($new == 'Nouveau') {
           $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
-          $array_historique[] = array("date" => date("d/m/Y H:i"), "id" => $id, "name" => $name, "author" => $author); // Ajout dans l'historique
+          $array_historique[] = $item_detail;
           if ($cfg_messagecenter == 1) {
             log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
             message::add(__CLASS__, 'Plugin disponible correspondant aux mots clefs : ' . $name . ' par ' . $author . ' (' . $cost_txt . ')');
@@ -190,6 +234,8 @@ class pluginsutiles extends eqLogic {
       } else {
         log::add(__CLASS__, 'debug', $name . ' par ' . $author . ' (' . $cost_txt . ')');
         log::add(__CLASS__, 'debug', 'description : ' . $description);
+        log::add(__CLASS__, 'debug', 'utilisation : ' . $utilisation);
+        log::add(__CLASS__, 'debug', 'author : ' . $author);
       }
     }
 
@@ -389,20 +435,35 @@ class pluginsutiles extends eqLogic {
 
   /*
   * Fonction exécutée automatiquement tous les jours par Jeedom
-  */
   public static function cronDaily() {
-    sleep(rand(0, 60));
-    $markets = pluginsutiles::refreshMarket();
-    foreach (eqLogic::byType('pluginsutiles') as $eqLogic) {
-      if ($eqLogic->getIsEnable()) {
-        $info = $eqLogic->search($markets);
-        log::add(__CLASS__, 'debug', 'setConf array_historique data ==> ' . json_encode($info));
-        $eqLogic->setConfiguration('array_historique', $info);
-        $eqLogic->save(true);
-      }
+  }
+  */
+
+  public static function addCronCheckMarket() {
+    $cron = cron::byClassAndFunction(__CLASS__, 'refreshPluginsFromMarket');
+    if (!is_object($cron)) {
+      $cron = new cron();
+      $cron->setClass(__CLASS__);
+      $cron->setFunction('refreshPluginsFromMarket');
     }
+    $cron->setEnable(1);
+    $cron->setDeamon(0);
+    $cron->setSchedule('0 ' . rand(0, 4) . ' * * *');
+    $cron->setTimeout(5);
+    $cron->save();
   }
 
+  public static function removeCronItems() {
+    try {
+      $crons = cron::searchClassAndFunction(__CLASS__, 'refreshPluginsFromMarket');
+      if (is_array($crons)) {
+        foreach ($crons as $cron) {
+          $cron->remove();
+        }
+      }
+    } catch (Exception $e) {
+    }
+  }
 
   /*     * *********************Méthodes d'instance************************* */
 
@@ -416,27 +477,41 @@ class pluginsutiles extends eqLogic {
 
   // Fonction exécutée automatiquement avant la mise à jour de l'équipement
   public function preUpdate() {
-    $cfg_keywords = $this->getConfiguration('cfg_keywords');
-    log::add(__CLASS__, 'info', 'Modification des mots clefs : ' . $cfg_keywords);
-    config::save('fullrefresh', 1, __CLASS__); // Passage à 1 du "fullrefesh" global suite au changement de la liste des mots clefs sur un équipement
+    $cfg_keywords = $this->getConfiguration('cfg_keywords', null);
+    $cfg_keywords_prev = $this->getConfiguration('cfg_keywords_previous', null);
 
-    $array_historique = $this->getConfiguration('array_historique');
-    if (empty($array_historique)) {
-      $array_historique = array();
+    if ($cfg_keywords_prev == $cfg_keywords  && $cfg_keywords  == null) {
+      log::add(__CLASS__, 'debug', 'keyword null - initialisation');
+      config::save('fullrefresh', 1, __CLASS__); // Passage à 1 du "fullrefesh" global suite au changement de la liste des mots clefs sur un équipement
+      return;
     }
 
-    $array_historique[] = array("date" => date("d/m/Y H:i"), "id" => '', "name" => 'Mise à jour des mots clefs', "author" => ''); // Utilisation de l'historique un peu adapté pour informer du changement de mots-clefs
-    $this->setConfiguration('array_historique', $array_historique);
-    $this->save(true);
+    $array_historique = $this->getConfiguration('array_historique', array());
+
+    if ($cfg_keywords_prev != $cfg_keywords) {
+      log::add(__CLASS__, 'info', 'Modification des mots clefs : >' . $cfg_keywords . '<');
+      log::add(__CLASS__, 'info', 'Anciens mots clefs : >' . $cfg_keywords_prev . '<');
+
+      config::save('fullrefresh', 1, __CLASS__); // Passage à 1 du "fullrefesh" global suite au changement de la liste des mots clefs sur un équipement
+
+      $array_historique[] = array("date" => date("d/m/Y H:i"), "id" => '', "name" => 'Mise à jour des mots clefs'); // Utilisation de l'historique un peu adapté pour informer du changement de mots-clefs
+
+      $this->setConfiguration('cfg_keywords_previous', $cfg_keywords);
+
+      // if keyword update, then refresh market check
+      $markets = pluginsutiles::refreshMarket();
+      $info = $this->search($markets);
+      log::add(__CLASS__, 'debug', 'setConf array_historique data ==> ' . json_encode($info));
+      $this->setConfiguration('array_historique', array_merge($array_historique, $info));
+
+      $this->save(true);
+    } else {
+      // log::add(__CLASS__, 'info', 'AUCUN chgt de keys');
+    }
   }
 
   // Fonction exécutée automatiquement après la mise à jour de l'équipement
   public function postUpdate() {
-    $markets = pluginsutiles::refreshMarket();
-    $info = $this->search($markets);
-    log::add(__CLASS__, 'debug', 'setConf array_historique data ==> ' . json_encode($info));
-    $this->setConfiguration('array_historique', $info);
-    $this->save(true);
   }
 
   // Fonction exécutée automatiquement avant la sauvegarde (création ou mise à jour) de l'équipement
@@ -445,17 +520,6 @@ class pluginsutiles extends eqLogic {
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
-    $info = $this->getCmd(null, 'html');
-    if (!is_object($info)) {
-      $info = new pluginsutilesCmd();
-      $info->setName(__('HTML', __FILE__));
-    }
-    $info->setLogicalId('html');
-    $info->setEqLogic_id($this->getId());
-    $info->setType('info');
-    $info->setSubType('string');
-    $info->save();
-
     $refresh = $this->getCmd(null, 'refresh');
     if (!is_object($refresh)) {
       $refresh = new pluginsutilesCmd();
@@ -463,6 +527,17 @@ class pluginsutiles extends eqLogic {
     }
     $refresh->setEqLogic_id($this->getId());
     $refresh->setLogicalId('refresh');
+    $refresh->setType('action');
+    $refresh->setSubType('other');
+    $refresh->save();
+
+    $refresh = $this->getCmd(null, 'removeHistory');
+    if (!is_object($refresh)) {
+      $refresh = new pluginsutilesCmd();
+      $refresh->setName(__('Supprimer tout l\'historique', __FILE__));
+    }
+    $refresh->setEqLogic_id($this->getId());
+    $refresh->setLogicalId('removeHistory');
     $refresh->setType('action');
     $refresh->setSubType('other');
     $refresh->save();
@@ -518,11 +593,6 @@ class pluginsutilesCmd extends cmd {
   public static $_widgetPossibility = array();
   */
 
-  /*     * ***********************Methode static*************************** */
-
-
-  /*     * *********************Methode d'instance************************* */
-
   /*
   * Permet d'empêcher la suppression des commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
   public function dontRemoveCmd() {
@@ -532,8 +602,7 @@ class pluginsutilesCmd extends cmd {
 
   // Exécution d'une commande
   public function execute($_options = array()) {
-    //config::remove('array_IdAlreadyFound', 'pluginsutiles');
-    //config::remove('array_historique', 'pluginsutiles');
+
     /** @var pluginsutiles $eqlogic */
     $eqlogic = $this->getEqLogic();
     switch ($this->getLogicalId()) {
@@ -541,13 +610,19 @@ class pluginsutilesCmd extends cmd {
         $markets = $eqlogic->refreshMarket();
         $info = $eqlogic->search($markets);
         log::add(__CLASS__, 'debug', 'setConf array_historique data ==> ' . json_encode($info));
-        $this->setConfiguration('array_historique', $info);
-        $this->save(true);
-        //$info = $eqlogic->refreshFromMarket(); 
-        //$eqlogic->checkAndUpdateCmd('html', $info);
+        $eqlogic->setConfiguration('array_historique', $info);
+        $eqlogic->save(true);
         break;
+
+      case 'removeHistory':
+        $eqlogic->setConfiguration('array_historique', '');
+        $eqlogic->setConfiguration('array_IdAlreadyFound', '');
+        $eqlogic->save(true);
+        break;
+
       default:
         log::add(__CLASS__, 'debug', 'Erreur durant execute');
+        break;
     }
   }
 
