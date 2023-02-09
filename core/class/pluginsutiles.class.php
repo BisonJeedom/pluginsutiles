@@ -195,6 +195,11 @@ class pluginsutiles extends eqLogic {
           $pluginAvailable = true;
         }
 
+        if ($this->getConfiguration('cfg_checkStableOnly', 0) && $beta == 0 && $stable == 1) {
+          // log::add(__CLASS__, 'warning', '*Stable Only*');
+          $pluginAvailable = true;
+        }
+
         if ($this->getConfiguration('cfg_checkBetaOnly', 0) && $beta == 1 && $stable == 0) {
           // log::add(__CLASS__, 'warning', '*Beta Only*');
           $pluginAvailable = true;
@@ -226,9 +231,15 @@ class pluginsutiles extends eqLogic {
           $new = 'Ancien'; // id déjà présent dans le tableau
         }
 
-        $msg_beta_only = ($beta == 1 && $stable == 0) ? ' [Beta] ' : '';
+        if ($beta == 1 && $stable == 0) {
+          $msg_version = ' [Beta] ';
+        } elseif ($beta == 0 && $stable == 1) {
+          $msg_version = ' [Stable] ';
+        } else {
+          $msg_version = '';
+        }
 
-        log::add(__CLASS__, 'info', '-> [' . $new . '] ' . $name . ' par ' . $author . $msg_beta_only . ' (' . $cost_txt . ')');
+        log::add(__CLASS__, 'info', '-> [' . $new . '] ' . $name . ' par ' . $author . $msg_version . ' (' . $cost_txt . ')');
         log::add(__CLASS__, 'info', '-> [' . $new . '] description : ' . $description);
         log::add(__CLASS__, 'info', '-> [' . $new . '] utilisation : ' . $utilisation);
 
@@ -236,7 +247,7 @@ class pluginsutiles extends eqLogic {
           $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
           $array_historique[] = $item_detail;
 
-          $msg = 'Plugin disponible correspondant aux critères : ' . $name . ' par ' . $author . $msg_beta_only . ' (' . $cost_txt . ')';
+          $msg = 'Plugin disponible correspondant aux critères : ' . $name . ' par ' . $author . $msg_version . ' (' . $cost_txt . ')';
           if ($cfg_messagecenter == 1) {
             log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
             message::add(__CLASS__, $msg);
