@@ -79,10 +79,10 @@ class pluginsutiles extends eqLogic {
     $fullrefresh = config::byKey('fullrefresh', __CLASS__);
     if ($fullrefresh == 1) { // Les mots-clefs d'au moins un des équipements a été modifié
       $timeState = null;
-      $txtLog = 'Recherche des mots clefs dans la totalité des plugins du Market';
+      $txtLog = 'Recherche dans la totalité des plugins du Market';
     } else {
       $timeState = 'newest';
-      $txtLog = 'Recherche des mots clefs dans les nouveaux plugins du Market';
+      $txtLog = 'Recherche dans les nouveaux plugins du Market uniquement';
     }
     log::add(__CLASS__, 'info', $txtLog);
 
@@ -281,7 +281,8 @@ class pluginsutiles extends eqLogic {
       config::save('fullrefresh', 0, __CLASS__);
     }
 
-    log::add(__CLASS__, 'info', 'Recherche terminée parmi ' . $nb_plugins . ' plugins : ' . $nb_found . ' plugins trouvé(s) et correspondant aux mots clefs');
+    log::add(__CLASS__, 'info', 'Recherche terminée parmi ' . $nb_plugins . ' plugins : ' . $nb_found . ' plugins trouvé(s) et correspondant aux critères');
+    log::add(__CLASS__, 'info', $nb_found . ' plugins trouvé(s) et n\'étant pas dans l\'historique');
     return $array_historique;
   }
 
