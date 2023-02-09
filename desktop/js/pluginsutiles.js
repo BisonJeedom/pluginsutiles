@@ -199,10 +199,10 @@ function printEqLogic(_eqLogic) {
 
     if (_eqLogic.configuration.cfg_notif) {
       actionOptions = []
-      var notifs = _eqLogic.configuration.action_notif;
+      var notifs = _eqLogic.configuration.action_notif || [];
 
       // ajout de la cmd notif
-      eltNotif.value(notifs[0].cmd);
+      if (notifs.length > 0) eltNotif.value(notifs[0].cmd);
 
       // recup des options
       notifs.forEach(_action => {
