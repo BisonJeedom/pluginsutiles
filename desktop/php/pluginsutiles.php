@@ -175,7 +175,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							</div>
 
 							<div class="form-group">
-								<label class="col-sm-5 control-label">{{Plugins en beta uniquement}}</label>
+								<label class="col-sm-5 control-label">{{Toutes les versions beta}}</label>
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkBetaOnly">
 								</div>
