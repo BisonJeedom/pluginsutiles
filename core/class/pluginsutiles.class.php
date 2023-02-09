@@ -378,15 +378,16 @@ class pluginsutiles extends eqLogic {
       config::save('fullrefresh', 1, __CLASS__); // Passage à 1 du "fullrefesh" global suite au changement de la liste des mots clefs sur un équipement
 
       $array_historique[] = array("date" => date("d/m/Y H:i"), "id" => '', "name" => 'Mise à jour des mots clefs'); // Utilisation de l'historique un peu adapté pour informer du changement de mots-clefs
-
+      $this->setConfiguration('array_historique', $array_historique);
       $this->setConfiguration('cfg_keywords_previous', $cfg_keywords);
+      $this->save(true);
 
       // if keyword update, then refresh market check
       $markets = pluginsutiles::refreshMarket();
       $info = $this->search($markets);
       log::add(__CLASS__, 'debug', 'setConf array_historique data ==> ' . json_encode($info));
-      $this->setConfiguration('array_historique', array_merge($array_historique, $info));
-
+      //$this->setConfiguration('array_historique', array_merge($array_historique, $info));
+      $this->setConfiguration('array_historique', $info);
       $this->save(true);
     } else {
       // log::add(__CLASS__, 'info', 'AUCUN chgt de keys');
