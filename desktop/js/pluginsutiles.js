@@ -157,9 +157,12 @@ function saveEqLogic(_eqLogic) {
 
     // recup des infos notifs
     var myData = $('.notifDiv').getValues('.expressionAttr');
+
+    if (!isset(myData[0].options)) myData[0].options = {};
     myData[0].options.expression = init(myData[0].cmd, '');
     myData[0].options.id = 'opt_PU_1234';
     _eqLogic.configuration.action_notif = myData;
+
   }
   else {
     unset(_eqLogic.configuration.action_notif);
@@ -171,6 +174,12 @@ function saveEqLogic(_eqLogic) {
 // fct core permettant de restituer les cmd declarées
 function printEqLogic(_eqLogic) {
   $('#table_plugins_info tbody').empty();
+
+  // items notif
+  $('#opt_PU_1234').empty();
+  var eltNotif = $('.notifDiv .expressionAttr[data-l1key=cmd]');
+  eltNotif.val('');
+
   if (isset(_eqLogic.configuration)) {
     if (isset(_eqLogic.configuration.array_historique)) {
       var myHistory = _eqLogic.configuration.array_historique;
@@ -193,8 +202,7 @@ function printEqLogic(_eqLogic) {
       var notifs = _eqLogic.configuration.action_notif;
 
       // ajout de la cmd notif
-      var elt = $('.notifDiv .expressionAttr[data-l1key=cmd]');
-      elt.value(notifs[0].cmd);
+      eltNotif.value(notifs[0].cmd);
 
       // recup des options
       notifs.forEach(_action => {
