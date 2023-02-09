@@ -195,12 +195,12 @@ class pluginsutiles extends eqLogic {
           $pluginAvailable = true;
         }
 
-        if ($this->getConfiguration('cfg_checkAllStable', 0) && $beta == 1 && $stable == 1) {
+        if ($this->getConfiguration('cfg_checkAllStable', 0) && $beta && $stable) {
           // log::add(__CLASS__, 'warning', '*Stable Only*');
           $pluginAvailable = true;
         }
 
-        if ($this->getConfiguration('cfg_checkAllBeta', 0) && $beta == 1 && $stable == 0) {
+        if ($this->getConfiguration('cfg_checkAllBeta', 0) && $beta && !$stable) {
           // log::add(__CLASS__, 'warning', '*Beta Only*');
           $pluginAvailable = true;
         }
@@ -231,9 +231,9 @@ class pluginsutiles extends eqLogic {
           $new = 'Ancien'; // id déjà présent dans le tableau
         }
 
-        if ($beta == 1 && $stable == 0) {
+        if ($beta && !$stable) {
           $msg_version = ' [Beta] ';
-        } elseif ($beta == 1 && $stable == 1) {
+        } elseif ($beta && $stable) {
           $msg_version = ' [Stable] ';
         } else {
           $msg_version = '';
