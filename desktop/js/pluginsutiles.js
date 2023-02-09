@@ -153,7 +153,7 @@ function saveEqLogic(_eqLogic) {
     _eqLogic.configuration = {};
   }
 
-  if (_eqLogic.configuration.cfg_notif) {
+  if (_eqLogic.configuration.cfg_notif == 1) {
 
     // recup des infos notifs
     var myData = $('.notifDiv').getValues('.expressionAttr');
@@ -165,7 +165,7 @@ function saveEqLogic(_eqLogic) {
 
   }
   else {
-    unset(_eqLogic.configuration.action_notif);
+    _eqLogic.configuration.action_notif = [];
   }
 
   return _eqLogic;
@@ -247,6 +247,16 @@ $('body').off('click', '.pluginsutiles .market').on('click', '.pluginsutiles .ma
   $('#marketModal').load('index.php?v=d&modal=update.display&type=' + $(this).attr('data-market_type') + '&id=' + $(this).attr('data-market_id') + '&repo=market').dialog('open');
 });
 
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_notif]').on('change', function () {
+  var elt = $('.notifDiv .notifDiv-option');
+  if ($(this).is(':checked')) {
+    elt.show();
+  }
+  else {
+    elt.hide();
+  }
+
+});
 
 /* Fonction permettant l'affichage des commandes dans l'équipement */
 function addCmdToTable(_cmd) {

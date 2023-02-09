@@ -188,14 +188,42 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_notif">
 								</div>
-								<div class="col-sm-12">
+								<div class="notifDiv-option" style="display:none;">
 
-									<input class="expressionAttr form-control col-sm-10 input-sm cmdAction" data-l1key="cmd" data-type="notifDiv" />
-									<span class="input-group-btn">
-										<!-- <a class="btn btn-sm listAction" data-type="notifDiv" title="{{Sélectionner un mot-clé}}"><i class="fas fa-tasks"></i></a> -->
-										<a class="btn btn-sm listCmdAction" data-type="notifDiv" title="{{Sélectionner une commande action}}"><i class="fas fa-list-alt"></i></a>
-									</span>
-									<div class="actionOptions" id="opt_PU_1234">
+									<div class="col-sm-12 form-group ">
+										<label class=" col-sm-4 control-label">{{Commande de notification}}</label>
+										<input class="expressionAttr form-control col-sm-7 input-sm cmdAction" data-l1key="cmd" data-type="notifDiv" />
+										<span class="input-group-btn">
+											<!-- <a class="btn btn-sm listAction" data-type="notifDiv" title="{{Sélectionner un mot-clé}}"><i class="fas fa-tasks"></i></a> -->
+											<a class="btn btn-sm listCmdAction" data-type="notifDiv" title="{{Sélectionner une commande action}}"><i class="fas fa-list-alt"></i></a>
+										</span>
+									</div>
+									<br />
+									<div class="col-sm-12 form-group">
+										<label class="col-sm-4 control-label"></label>
+										<div class="col-sm-8 form-group ">
+
+											<div class="actionOptions" id="opt_PU_1234">
+											</div>
+										</div>
+									</div>
+
+
+									<div class="col-lg-12 noDate">
+										<legend><i class="fas fa-paint-brush"></i> {{Personnalisation}}</legend>
+										<div class="col-sm-12">
+											<span class="">
+												Vous pouvez utiliser les tags suivants qui seront automatiquement remplacés lors de la notification :
+												<ul>
+													<li>#eqId# -> numéro de l’équipement Pense-Bête</li>
+													<li>#eqName# -> nom de l’équipement Pense-Bête</li>
+													<li>#name# -> nom du plugin</li>
+													<li>#author# -> auteur du plugin</li>
+													<li>#cost# -> coût du plugin</li>
+													<li>#msg# -> message standard envoyé</li>
+												</ul>
+											</span>
+										</div>
 									</div>
 								</div>
 							</div>
