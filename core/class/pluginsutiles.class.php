@@ -523,6 +523,7 @@ class pluginsutilesCmd extends cmd {
       case 'removeHistory':
         $eqlogic->setConfiguration('array_historique', '');
         $eqlogic->setConfiguration('array_IdAlreadyFound', '');
+        $eqlogic->setConfiguration('cfg_keywords_previous', null);
         $eqlogic->save(true);
         break;
 
