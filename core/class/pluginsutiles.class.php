@@ -133,6 +133,23 @@ class pluginsutiles extends eqLogic {
     $nb_found = 0;
     $nb_plugins = 0;
 
+    /*
+    foreach ($_markets as $key => $item) {
+      log::add(__CLASS__, 'debug', 'key : ' . $key);
+      foreach ($item as $k => $i) {
+        log::add(__CLASS__, 'debug', 'k : ' . $k);
+        log::add(__CLASS__, 'debug', 'i : ' . $i);
+        if ($k == 'allowVersion') {
+          foreach ($i as $kk => $ii) {
+            log::add(__CLASS__, 'debug', 'kk : ' . $kk);
+            log::add(__CLASS__, 'debug', 'ii : ' . $ii);
+          }
+        }
+      }
+    }
+    return;
+    */
+
     foreach ($_markets as $plugin) {
       $nb_plugins++;
       $error = 0;
