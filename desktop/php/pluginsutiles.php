@@ -183,6 +183,23 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 
+							<div class="form-group notifDiv">
+								<label class="col-sm-4 control-label">{{Alertes via une notification}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_notif">
+								</div>
+								<div class="col-sm-12">
+
+									<input class="expressionAttr form-control col-sm-10 input-sm cmdAction" data-l1key="cmd" data-type="notifDiv" />
+									<span class="input-group-btn">
+										<!-- <a class="btn btn-sm listAction" data-type="notifDiv" title="{{Sélectionner un mot-clé}}"><i class="fas fa-tasks"></i></a> -->
+										<a class="btn btn-sm listCmdAction" data-type="notifDiv" title="{{Sélectionner une commande action}}"><i class="fas fa-list-alt"></i></a>
+									</span>
+									<div class="actionOptions" id="opt_PU_1234">
+									</div>
+								</div>
+							</div>
+
 						</div>
 
 						<!-- Partie droite de l'onglet "Équipement" -->

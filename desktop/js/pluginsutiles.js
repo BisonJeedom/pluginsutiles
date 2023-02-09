@@ -31,15 +31,14 @@ $("body").off('click', '.bt_removeAction').on('click', '.bt_removeAction', funct
 $("body").off('click', '.listCmdAction').on('click', '.listCmdAction', function () {
   var type = $(this).attr('data-type');
   var el = $(this).closest('.' + type).find('.expressionAttr[data-l1key=cmd]');
-  jeedom.cmd.getSelectModal({ cmd: { type: 'action' } }, function (result) {
+  jeedom.cmd.getSelectModal({ cmd: { type: 'action', subtype: 'message' } }, function (result) {
     el.value(result.human);
     jeedom.cmd.displayActionOption(el.value(), '', function (html) {
       el.closest('.' + type).find('.actionOptions').html(html);
+      taAutosize();
     });
-
   });
 });
-
 
 // copier/coller du core (cmd.configure.php), permet de choisir la liste des actions (scenario, attendre, ...)
 $("body").undelegate(".listAction", 'click').delegate(".listAction", 'click', function () {
@@ -108,6 +107,7 @@ function addAction(_action, _type) {
 }
 
 function addHistory(_history) {
+  // console.log("history =>", _history)
 
   var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin">';
   tr += '<td><span class="pu_history" data-l1key="date"></span></td>';
@@ -143,6 +143,7 @@ function addHistory(_history) {
 
   $('#table_plugins_info tbody').append(tr);
   $('#table_plugins_info tbody tr').last().setValues(_history, '.pu_history');
+
 }
 
 
@@ -151,8 +152,19 @@ function saveEqLogic(_eqLogic) {
   if (!isset(_eqLogic.configuration)) {
     _eqLogic.configuration = {};
   }
-  _eqLogic.configuration.action_notif = $('#div_action_notif .action_notif').getValues('.expressionAttr');
-  // alert("test : " + _eqLogic.configuration.action_notif);
+
+  if (_eqLogic.configuration.cfg_notif) {
+
+    // recup des infos notifs
+    var myData = $('.notifDiv').getValues('.expressionAttr');
+    myData[0].options.expression = init(myData[0].cmd, '');
+    myData[0].options.id = 'opt_PU_1234';
+    _eqLogic.configuration.action_notif = myData;
+  }
+  else {
+    unset(_eqLogic.configuration.action_notif);
+  }
+
   return _eqLogic;
 }
 
@@ -171,10 +183,43 @@ function printEqLogic(_eqLogic) {
         });
 
         for (var i in myHistory) {
-          // console.log("adding : ", myHistory[i]);
           addHistory(myHistory[i]);
         }
       }
+    }
+
+    if (_eqLogic.configuration.cfg_notif) {
+      actionOptions = []
+      var notifs = _eqLogic.configuration.action_notif;
+
+      // ajout de la cmd notif
+      var elt = $('.notifDiv .expressionAttr[data-l1key=cmd]');
+      elt.value(notifs[0].cmd);
+
+      // recup des options
+      notifs.forEach(_action => {
+        // console.log('check _action', _action);
+        actionOptions.push({
+          expression: _action.cmd,
+          options: _action.options,
+          id: _action.options.id
+        });
+      })
+
+      //affichage des options
+      jeedom.cmd.displayActionsOption({
+        params: actionOptions,
+        async: false,
+        error: function (error) {
+          $('#div_alert').showAlert({ message: error.message, level: 'danger' });
+        },
+        success: function (data) {
+          for (var i in data) {
+            $('#' + data[i].id).append(data[i].html.html);
+          }
+          taAutosize();
+        }
+      });
     }
   }
 }

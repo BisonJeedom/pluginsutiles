@@ -128,6 +128,7 @@ class pluginsutiles extends eqLogic {
 
     // Récupération avertissement dans le centre de message
     $cfg_messagecenter = $this->getConfiguration("cfg_messagecenter", 0);
+    $cfg_notif = $this->getConfiguration("cfg_notif", 0);
 
     $error = 1;
     $nb_found = 0;
@@ -162,8 +163,8 @@ class pluginsutiles extends eqLogic {
       $realcost = $plugin['realcost'];
       $description = $plugin['description'];
       $utilisation = $plugin['utilization'];
-      $beta = ($plugin['status']['beta'] == "1") ?? false;
-      $stable = ($plugin['status']['stable'] == "1") ?? false;
+      $beta = ($plugin['status']['beta'] ?? '' == "1") ?? false;
+      $stable = ($plugin['status']['stable'] ?? '' == "1") ?? false;
       $private = $plugin['private'] == "1";
 
       if ($cost == 0) {
@@ -226,9 +227,28 @@ class pluginsutiles extends eqLogic {
         if ($new == 'Nouveau') {
           $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
           $array_historique[] = $item_detail;
+
+          $msg = 'Plugin disponible correspondant aux mots clefs : ' . $name . ' par ' . $author . ' (' . $cost_txt . ')';
           if ($cfg_messagecenter == 1) {
             log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
-            message::add(__CLASS__, 'Plugin disponible correspondant aux mots clefs : ' . $name . ' par ' . $author . ' (' . $cost_txt . ')');
+            message::add(__CLASS__, $msg);
+          }
+
+          if ($cfg_notif == 1) {
+            $notifParam = $this->getConfiguration("action_notif", array());
+            foreach ($notifParam as $notif) {
+              $notifCmdId = str_replace('#', '', $notif['cmd'] ?? '');
+
+              /** @var cmd $notifObj */
+              $notifObj = cmd::byId($notifCmdId);
+              if (!is_object($notifObj)) continue;
+
+              $notifDetail = $item_detail;
+              $notifDetail['defaultMsg'] = $msg;
+              $titleNotif = $this->replaceCustomData($notif['options']['title'] ?? 'Nouveaux plugins trouvés !', $notifDetail);
+              $msgNotif = $this->replaceCustomData($notif['options']['message'] ?? $msg, $notifDetail);
+              $notifObj->execCmd(array('title' => $titleNotif, 'message' => $msgNotif));
+            }
           }
         }
       } else {
@@ -269,6 +289,13 @@ class pluginsutiles extends eqLogic {
     }
   }
 
+  public function replaceCustomData(string $data, array $plugin = array()) {
+
+    $arrResearch = array('#eqId#', '#eqName#', '#msg#', '#author#', '#name#', '#cost#');
+    $arrReplace = array($this->getId(), $this->getName(), $plugin['defaultMsg'], $plugin['author'], $plugin['name'], $plugin['cost']);
+
+    return str_replace($arrResearch, $arrReplace, $data);
+  }
 
   /*     * *************************Attributs****************************** */
 
@@ -492,7 +519,7 @@ class pluginsutilesCmd extends cmd {
       case 'refresh':
         $markets = $eqlogic->refreshMarket();
         $info = $eqlogic->search($markets);
-        log::add(__CLASS__, 'debug', 'setConf array_historique data ==> ' . json_encode($info));
+        log::add('pluginustiles', 'debug', 'setConf array_historique data ==> ' . json_encode($info));
         $eqlogic->setConfiguration('array_historique', $info);
         $eqlogic->save(true);
         break;
@@ -504,7 +531,7 @@ class pluginsutilesCmd extends cmd {
         break;
 
       default:
-        log::add(__CLASS__, 'debug', 'Erreur durant execute');
+        log::add('pluginustiles', 'debug', 'Erreur durant execute');
         break;
     }
   }
