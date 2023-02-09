@@ -121,7 +121,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Options}}</label>
+								<label class="col-sm-5 control-label">{{Options}}</label>
 								<div class="col-sm-6">
 									<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked>{{Activer}}</label>
 									<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked>{{Visible}}</label>
@@ -131,7 +131,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							<legend><i class="fas fa-search"></i> {{Paramètres de recherche}}</legend>
 
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Mots-clef}}
+								<label class="col-sm-5 control-label">{{Mots-clef}}
 									<sup><i class="fas fa-question-circle tooltips" title="{{Séparer les mots-clefs avec des points-virgules. Exemple : photovoltaïque;energie;soleil}}"></i></sup>
 								</label>
 								<div class="col-sm-6">
@@ -140,26 +140,26 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							</div>
 
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Nom du plugin}}</label>
+								<label class="col-sm-5 control-label">{{Nom du plugin}}</label>
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="checkName" checked>
 								</div>
 							</div>
 
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Description du plugin}}</label>
+								<label class="col-sm-5 control-label">{{Description du plugin}}</label>
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="checkDescription" checked>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Utilisation du plugin}}</label>
+								<label class="col-sm-5 control-label">{{Utilisation du plugin}}</label>
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="checkUtilisation">
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Auteur}}</label>
+								<label class="col-sm-5 control-label">{{Auteur}}</label>
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="checkAutor">
 								</div>
@@ -168,14 +168,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							<legend><i class="fas fa-dice"></i> {{Autre recherche}}</legend>
 
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Afficher les plugins en promo}}</label>
+								<label class="col-sm-5 control-label">{{Afficher les plugins en promo}}</label>
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="checkDiscount">
 								</div>
 							</div>
 
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Plugins en beta uniquement}}</label>
+								<label class="col-sm-5 control-label">{{Plugins en beta uniquement}}</label>
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkBetaOnly">
 								</div>
@@ -184,22 +184,22 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							<legend><i class="fas fa-bullhorn"></i> {{Paramètres de notification}}</legend>
 
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Alertes dans le centre de message}}</label>
+								<label class="col-sm-5 control-label">{{Alertes dans le centre de message}}</label>
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_messagecenter">
 								</div>
 							</div>
 
 							<div class="form-group notifDiv">
-								<label class="col-sm-4 control-label">{{Alertes via une notification}}</label>
+								<label class="col-sm-5 control-label">{{Alertes via une notification}}</label>
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_notif">
 								</div>
 								<div class="notifDiv-option" style="display:none;">
 
 									<div class="col-sm-12 form-group ">
-										<label class=" col-sm-4 control-label">{{Commande de notification}}</label>
-										<input class="expressionAttr form-control col-sm-7 input-sm cmdAction" data-l1key="cmd" data-type="notifDiv" />
+										<label class=" col-sm-5 control-label">{{Commande de notification}}</label>
+										<input class="expressionAttr form-control col-sm-6 input-sm cmdAction" data-l1key="cmd" data-type="notifDiv" />
 										<span class="input-group-btn">
 											<!-- <a class="btn btn-sm listAction" data-type="notifDiv" title="{{Sélectionner un mot-clé}}"><i class="fas fa-tasks"></i></a> -->
 											<a class="btn btn-sm listCmdAction" data-type="notifDiv" title="{{Sélectionner une commande action}}"><i class="fas fa-list-alt"></i></a>
@@ -240,13 +240,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						<!-- Partie droite de l'onglet "Équipement" -->
 						<!-- Affiche un champ de commentaire par défaut mais vous pouvez y mettre ce que vous voulez -->
 						<div class="col-lg-7">
-							<legend><i class="fas fa-info"></i> {{Informations}}</legend>
+							<legend><i class="fas fa-info"></i> {{Historique des évènements}}</legend>
 
 							<table id="table_plugins_info" class="table table-bordered table-condensed">
 								<thead>
 									<tr>
 										<th style="width: 70px;">{{Date}}</th>
-										<th style="width: 20px;">{{Id}}</th>
+										<th style="width: 25px;">{{Id}}</th>
 										<th style="width: 200px;">{{Nom}}</th>
 										<th style="width: 100px;">{{Auteur}}</th>
 										<th style="width: 20px;"></th>
