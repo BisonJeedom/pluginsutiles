@@ -195,12 +195,12 @@ class pluginsutiles extends eqLogic {
           $pluginAvailable = true;
         }
 
-        if ($this->getConfiguration('cfg_checkStableOnly', 0) && $beta == 0 && $stable == 1) {
+        if ($this->getConfiguration('cfg_checkAllStable', 0) && $beta == 1 && $stable == 1) {
           // log::add(__CLASS__, 'warning', '*Stable Only*');
           $pluginAvailable = true;
         }
 
-        if ($this->getConfiguration('cfg_checkBetaOnly', 0) && $beta == 1 && $stable == 0) {
+        if ($this->getConfiguration('cfg_checkAllBeta', 0) && $beta == 1 && $stable == 0) {
           // log::add(__CLASS__, 'warning', '*Beta Only*');
           $pluginAvailable = true;
         }
@@ -233,7 +233,7 @@ class pluginsutiles extends eqLogic {
 
         if ($beta == 1 && $stable == 0) {
           $msg_version = ' [Beta] ';
-        } elseif ($beta == 0 && $stable == 1) {
+        } elseif ($beta == 1 && $stable == 1) {
           $msg_version = ' [Stable] ';
         } else {
           $msg_version = '';

@@ -177,14 +177,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							<div class="form-group">
 								<label class="col-sm-5 control-label">{{Toutes les versions stable}}</label>
 								<div class="col-sm-6">
-									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkStableOnly">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkAllStable">
 								</div>
 							</div>
 
 							<div class="form-group">
 								<label class="col-sm-5 control-label">{{Toutes les versions beta}}</label>
 								<div class="col-sm-6">
-									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkBetaOnly">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkAllBeta">
 								</div>
 							</div>
 
