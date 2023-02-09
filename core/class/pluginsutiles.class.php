@@ -256,6 +256,19 @@ class pluginsutiles extends eqLogic {
     return $array_historique;
   }
 
+  public function refreshPluginsFromMarket() {
+    $markets = pluginsutiles::refreshMarket();
+    /** @var pluginsutiles $eqLogic */
+    foreach (eqLogic::byType('pluginsutiles') as $eqLogic) {
+      if ($eqLogic->getIsEnable()) {
+        $info = $eqLogic->search($markets);
+        log::add(__CLASS__, 'debug', 'setConf array_historique data ==> ' . json_encode($info));
+        $eqLogic->setConfiguration('array_historique', $info);
+        $eqLogic->save(true);
+      }
+    }
+  }
+
   /*
   public function refreshFromMarket() {
     log::add(__CLASS__, 'debug', 'START');
