@@ -438,7 +438,7 @@ class pluginsutiles extends eqLogic {
     $refresh = $this->getCmd(null, 'removeHistory');
     if (!is_object($refresh)) {
       $refresh = new pluginsutilesCmd();
-      $refresh->setName(__('Supprimer tout l\'historique', __FILE__));
+      $refresh->setName(__('Supprimer historique', __FILE__));
     }
     $refresh->setEqLogic_id($this->getId());
     $refresh->setLogicalId('removeHistory');
