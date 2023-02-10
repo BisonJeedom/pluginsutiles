@@ -356,7 +356,7 @@ class pluginsutiles extends eqLogic {
     }
     $cron->setEnable(1);
     $cron->setDeamon(0);
-    $cron->setSchedule('0 ' . rand(0, 4) . ' * * *');
+    $cron->setSchedule(rand(0, 59) . ' ' . rand(0, 4) . ' * * *');
     $cron->setTimeout(5);
     $cron->save();
   }
