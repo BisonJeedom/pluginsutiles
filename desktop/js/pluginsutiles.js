@@ -110,9 +110,9 @@ function addHistory(_history) {
   // console.log("history =>", _history)
 
   if (_history.id != '') {
-    var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin">';
+    var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin">'; // Plugins
   } else {
-    var tr = '<tr>';
+    var tr = '<tr style="font-weight: bold;font-style: italic;">'; // Mise à jour des mots-clefs
   }
   tr += '<td><span class="pu_history" data-l1key="date"></span></td>';
   tr += '<td><span class="pu_history" data-l1key="id"></span></td>';
