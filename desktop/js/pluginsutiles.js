@@ -259,7 +259,27 @@ $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_notif]').on('change', f
   else {
     elt.hide();
   }
+});
 
+
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkStableOnly]').on('change', function () {
+  var elt = $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkBetaOnly]');
+  if ($(this).is(':checked')) {   
+    //elt.prop('checked', false);
+    elt.prop('disabled', 'disabled');
+  } else {
+    elt.prop('disabled', false);
+  }
+});
+
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkBetaOnly]').on('change', function () {
+  var elt = $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkStableOnly]');
+  if ($(this).is(':checked')) {   
+    //elt.prop('checked', false);
+    elt.prop('disabled', 'disabled');
+  } else {
+    elt.prop('disabled', false);
+  }
 });
 
 /* Fonction permettant l'affichage des commandes dans l'équipement */
