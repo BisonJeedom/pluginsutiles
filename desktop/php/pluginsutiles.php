@@ -179,7 +179,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 
-							<legend><i class="fas fa-dice"></i> {{Autre recherche}}</legend>
+							<legend><i class="fas fa-dice"></i> {{Autres critères indépendants des mots-clefs}}</legend>
 
 							<div class="form-group">
 								<label class="col-sm-5 control-label">{{Afficher les plugins en promo}}</label>
@@ -245,13 +245,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
 
 									<div class="col-lg-12 noDate">
-										<legend><i class="fas fa-paint-brush"></i> {{Personnalisation}}</legend>
+										<legend><i class="fas fa-paint-brush"></i>{{Personnalisation}}</legend>
 										<div class="col-sm-12">
 											<span class="">
 												Vous pouvez utiliser les tags suivants qui seront automatiquement remplacés lors de la notification :
 												<ul>
-													<li>#eqId# -> numéro de l’équipement Pense-Bête</li>
-													<li>#eqName# -> nom de l’équipement Pense-Bête</li>
+													<li>#eqId# -> numéro de l’équipement Plugins Utiles</li>
+													<li>#eqName# -> nom de l’équipement Plugins Utiles</li>
 													<li>#name# -> nom du plugin</li>
 													<li>#author# -> auteur du plugin</li>
 													<li>#cost# -> coût du plugin</li>
