@@ -175,6 +175,16 @@ class pluginsutiles extends eqLogic {
 
       $pluginAvailable = false;
       if (count($keywords) > 0) {  // on fait la recherche si seulement on a 1 mot clé
+        if ($this->getConfiguration('cfg_checkStableOnly', 1) && $beta && !$stable) {
+          // log::add(__CLASS__, 'warning', 'ask for Stable Only but Beta version');
+          continue;
+        }
+
+        if ($this->getConfiguration('cfg_checkBetaOnly', 1) && $beta && $stable) {
+          // log::add(__CLASS__, 'warning', 'ask for Beta Only but Stable version');
+          continue;
+        }
+
         if ($this->getConfiguration('checkName', 1) && self::arrayContainsWord($name, $keywords)) {
           // log::add(__CLASS__, 'warning', 'one key found in *NAME*');
           $pluginAvailable = true;
@@ -292,8 +302,7 @@ class pluginsutiles extends eqLogic {
       config::save('fullrefresh', 0, __CLASS__);
     }
 
-    log::add(__CLASS__, 'info', 'Recherche terminée parmi ' . $nb_plugins . ' plugins : ' . $nb_found . ' plugins trouvé(s) et correspondant aux critères');
-    log::add(__CLASS__, 'info', $nb_found . ' plugins trouvé(s) et n\'étant pas dans l\'historique');
+    log::add(__CLASS__, 'info', 'Recherche terminée parmi ' . $nb_plugins . ' plugins : ' . $nb_found . ' nouveaux plugins trouvé(s) et correspondant aux critères');
     return $array_historique;
   }
 

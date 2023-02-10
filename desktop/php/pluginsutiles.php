@@ -165,6 +165,20 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 
+							<div class="form-group">
+								<label class="col-sm-5 control-label">{{Version stable uniquement}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkStableOnly">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-5 control-label">{{Version beta uniquement}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkBetaOnly">
+								</div>
+							</div>
+
 							<legend><i class="fas fa-dice"></i> {{Autre recherche}}</legend>
 
 							<div class="form-group">
