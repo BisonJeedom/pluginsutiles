@@ -249,7 +249,7 @@ class pluginsutiles extends eqLogic {
           $msg_version = '';
         }
 
-        log::add(__CLASS__, 'info', '-> [' . $new . '] ' . $name . ' par ' . $author . $msg_version . ' (' . $cost_txt . ')');
+        log::add(__CLASS__, 'info', '-> [' . $new . '] ' . $name . ' par ' . $author . $msg_version . '(' . $cost_txt . ')');
         log::add(__CLASS__, 'info', '-> [' . $new . '] description : ' . $description);
         log::add(__CLASS__, 'info', '-> [' . $new . '] utilisation : ' . $utilisation);
 
@@ -257,7 +257,7 @@ class pluginsutiles extends eqLogic {
           $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
           $array_historique[] = $item_detail;
 
-          $msg = 'Plugin disponible correspondant aux critères : ' . $name . ' par ' . $author . $msg_version . ' (' . $cost_txt . ')';
+          $msg = 'Plugin disponible correspondant aux critères : ' . $name . ' par ' . $author . $msg_version . '(' . $cost_txt . ')';
           if ($cfg_messagecenter == 1) {
             log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
             message::add(__CLASS__, $msg);
