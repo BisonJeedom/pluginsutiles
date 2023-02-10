@@ -202,6 +202,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 
+							<div class="form-group">
+								<label class="col-sm-5 control-label">{{Changements sur version/prix/privé}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkChanges">
+								</div>
+							</div>
+
 							<legend><i class="fas fa-bullhorn"></i> {{Paramètres de notification}}</legend>
 
 							<div class="form-group">

@@ -43,6 +43,19 @@ class pluginsutiles extends eqLogic {
     return $arr;
   }
 
+  public function checkChangesSinceLastRecord($_id, $_olditem, $_newitem) {
+    foreach ($_olditem[$_id] as $key => $value) {
+      //log::add(__CLASS__, 'info', '$_olditem : ' . $key . ' => ' . $value);
+      //log::add(__CLASS__, 'info', '$_newitem : ' . $key . ' => ' . $_newitem[$key]);
+      if ($_newitem[$key] != $value) {
+        return 1;
+      }
+    }
+    return 0;
+  }
+
+
+
   /*
   public function refreshMarket() {
     $url = "https://market.jeedom.com/index.php?v=d&p=market&type=plugin";
@@ -227,7 +240,7 @@ class pluginsutiles extends eqLogic {
 
       if ($this->getConfiguration('checkDiscount', 0) && ($realcost != $cost)) {
         log::add(__CLASS__, 'info', 'Plugin en promo :' . $name);
-        $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
+        $array_IdAlreadyFound[$id] = array("private" => $private, "beta" => $beta, "stable" => $stable, "realcost" => $realcost); // Ajout de l'id du plugin trouvé et signalé
         $array_historique[] = array_merge($item_detail, array("discount" => true));
       }
 
@@ -235,9 +248,14 @@ class pluginsutiles extends eqLogic {
         $nb_found++;
         log::add(__CLASS__, 'info', 'Plugin correspondant aux critères :');
 
-        if (array_search($id, $array_IdAlreadyFound) === false) {
+        if (!array_key_exists($id, $array_IdAlreadyFound)) {
           $new = 'Nouveau'; // id non trouvé dans le tableau
         } else {
+          if ($this->getConfiguration('cfg_checkChanges', 0)) {
+            if (self::checkChangesSinceLastRecord($id, $array_IdAlreadyFound, $item_detail)) {;
+              $new = 'Nouveau'; // changements pour cet id (private, beta, stable, realcost)
+            }
+          }
           $new = 'Ancien'; // id déjà présent dans le tableau
         }
 
@@ -254,7 +272,7 @@ class pluginsutiles extends eqLogic {
         log::add(__CLASS__, 'info', '-> [' . $new . '] utilisation : ' . $utilisation);
 
         if ($new == 'Nouveau') {
-          $array_IdAlreadyFound[] = $id; // Ajout de l'id du plugin trouvé et signalé
+          $array_IdAlreadyFound[$id] = array("private" => $private, "beta" => $beta, "stable" => $stable, "realcost" => $realcost); // Ajout de l'id du plugin trouvé et signalé
           $array_historique[] = $item_detail;
 
           $msg = 'Plugin disponible correspondant aux critères : ' . $name . ' par ' . $author . $msg_version . '(' . $cost_txt . ')';
@@ -283,9 +301,9 @@ class pluginsutiles extends eqLogic {
           }
         }
       } else {
-        log::add(__CLASS__, 'debug', $name . ' par ' . $author . ' (' . $cost_txt . ')');
-        log::add(__CLASS__, 'debug', 'description : ' . $description);
-        log::add(__CLASS__, 'debug', 'utilisation : ' . $utilisation);
+        //log::add(__CLASS__, 'debug', $name . ' par ' . $author . ' (' . $cost_txt . ')');
+        //log::add(__CLASS__, 'debug', 'description : ' . $description);
+        //log::add(__CLASS__, 'debug', 'utilisation : ' . $utilisation);
       }
     }
 
