@@ -55,39 +55,6 @@ class pluginsutiles extends eqLogic {
   }
 
 
-
-  /*
-  public function refreshMarket() {
-    $url = "https://market.jeedom.com/index.php?v=d&p=market&type=plugin";
-    $data = file_get_contents($url);
-    @$dom = new DOMDocument();
-    $dom->loadHTML($data);
-    
-    foreach($dom->getElementsByTagName('div') as $div) {
-        $id = $div->getAttribute('data-market_id');
-    	//log::add(__CLASS__, 'debug', 'id : '.$id);
-      
-      	if ($id != '') {
-          $nb++;
-          $params = $div->getElementsByTagName('span');
-          $name = $params->item(0)->nodeValue;
-          $dev = substr($params->item(1)->nodeValue, 4); // "Par xxxx" -> "xxxx"
-          $prix = $params->item(4)->nodeValue;
-          log::add(__CLASS__, 'debug', $id.' -> '.$name.' par '.$dev.' : '.$prix);
-        }
-      
-        
-        for ($i = 0; $i < 7; $i++) {
-        	log::add(__CLASS__, 'debug', $i.' : '.$params->item($i)->nodeValue);
-        }
-        
-        
-    }
-    log::add(__CLASS__, 'debug', 'Total : '.$nb.' pluggins');
-    return;
-  }
-  */
-
   public function refreshMarket() {
     $fullrefresh = config::byKey('fullrefresh', __CLASS__);
     if ($fullrefresh == 1) { // Les mots-clefs d'au moins un des équipements a été modifié
@@ -146,23 +113,6 @@ class pluginsutiles extends eqLogic {
     $error = 1;
     $nb_found = 0;
     $nb_plugins = 0;
-
-    /*
-    foreach ($_markets as $key => $item) {
-      log::add(__CLASS__, 'debug', 'key : ' . $key);
-      foreach ($item as $k => $i) {
-        log::add(__CLASS__, 'debug', 'k : ' . $k);
-        log::add(__CLASS__, 'debug', 'i : ' . $i);
-        if ($k == 'allowVersion') {
-          foreach ($i as $kk => $ii) {
-            log::add(__CLASS__, 'debug', 'kk : ' . $kk);
-            log::add(__CLASS__, 'debug', 'ii : ' . $ii);
-          }
-        }
-      }
-    }
-    return;
-    */
 
     foreach ($_markets as $plugin) {
       // log::add(__CLASS__, 'debug', 'receive plugin =>' . json_encode($plugin));
@@ -301,9 +251,9 @@ class pluginsutiles extends eqLogic {
           }
         }
       } else {
-        //log::add(__CLASS__, 'debug', $name . ' par ' . $author . ' (' . $cost_txt . ')');
-        //log::add(__CLASS__, 'debug', 'description : ' . $description);
-        //log::add(__CLASS__, 'debug', 'utilisation : ' . $utilisation);
+        log::add(__CLASS__, 'debug', $name . ' par ' . $author . ' (' . $cost_txt . ')');
+        log::add(__CLASS__, 'debug', 'description : ' . $description);
+        log::add(__CLASS__, 'debug', 'utilisation : ' . $utilisation);
       }
     }
 
