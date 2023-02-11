@@ -138,12 +138,12 @@ class pluginsutiles extends eqLogic {
 
       $pluginAvailable = false;
       if (count($keywords) > 0) {  // on fait la recherche si seulement on a 1 mot clé
-        if ($this->getConfiguration('cfg_checkStableOnly', 1) && $beta && !$stable) {
+        if ($this->getConfiguration('cfg_checkStableOnly', 0) && $beta && !$stable) {
           // log::add(__CLASS__, 'warning', 'ask for Stable Only but Beta version');
           continue;
         }
 
-        if ($this->getConfiguration('cfg_checkBetaOnly', 1) && $beta && $stable) {
+        if ($this->getConfiguration('cfg_checkBetaOnly', 0) && $beta && $stable) {
           // log::add(__CLASS__, 'warning', 'ask for Beta Only but Stable version');
           continue;
         }
