@@ -293,11 +293,55 @@ class pluginsutiles extends eqLogic {
   }
 
   public function replaceCustomData(string $data, array $plugin = array()) {
-
     $arrResearch = array('#eqId#', '#eqName#', '#msg#', '#author#', '#name#', '#cost#');
     $arrReplace = array($this->getId(), $this->getName(), $plugin['defaultMsg'], $plugin['author'], $plugin['name'], $plugin['cost']);
 
     return str_replace($arrResearch, $arrReplace, $data);
+  }
+
+  public function getChangesinOptions() {
+    /*
+    $checkName = $this->getConfiguration('checkName', null);
+    $checkDescription = $this->getConfiguration('checkDescription', null);
+    $checkUtilisation = $this->getConfiguration('checkUtilisation', null);
+    $checkAutor = $this->getConfiguration('checkAutor', null);
+    $cfg_checkStableOnly = $this->getConfiguration('cfg_checkStableOnly', null);
+    $cfg_checkBetaOnly = $this->getConfiguration('cfg_checkBetaOnly', null);
+    $cfg_checkExcludePrivate = $this->getConfiguration('cfg_checkExcludePrivate', null);
+    $checkDiscount = $this->getConfiguration('checkDiscount', null);
+    $cfg_checkAllStable = $this->getConfiguration('cfg_checkAllStable', null);
+    $cfg_checkAllBeta = $this->getConfiguration('cfg_checkAllBeta', null);
+    $cfg_checkChanges =  $this->getConfiguration('cfg_checkChanges', null);
+    */
+
+    $cfg_Options =  $this->getConfiguration('cfg_Options', null);
+    if (is_null($cfg_Options)) {
+      $cfg_Options = array();
+    }
+    log::add(__CLASS__, 'debug', 'Options enregitrées ==> ' . json_encode($cfg_Options));
+
+    $actual_Options = array(
+      "checkName" => $this->getConfiguration('checkName', null),
+      "checkDescription" => $this->getConfiguration('checkDescription', null),
+      "checkUtilisation" => $this->getConfiguration('checkUtilisation', null),
+      "checkAutor" => $this->getConfiguration('checkAutor', null),
+      "cfg_checkStableOnly" => $this->getConfiguration('cfg_checkStableOnly', null),
+      "cfg_checkBetaOnly" => $this->getConfiguration('cfg_checkBetaOnly', null),
+      "cfg_checkExcludePrivate" => $this->getConfiguration('cfg_checkExcludePrivate', null),
+      "checkDiscount" => $this->getConfiguration('checkDiscount', null),
+      "cfg_checkAllStable" => $this->getConfiguration('cfg_checkAllStable', null),
+      "cfg_checkAllBeta" => $this->getConfiguration('cfg_checkAllBeta', null),
+      "cfg_checkChanges" => $this->getConfiguration('cfg_checkChanges', null)
+    );
+    log::add(__CLASS__, 'debug', 'Options actuelles ==> ' . json_encode($actual_Options));
+
+    if ($cfg_Options === $actual_Options) {
+      return 0; // Pas de changements
+    } else {
+      $this->setConfiguration('cfg_Options', $actual_Options);
+      $this->save(true);
+      return 1; // Changement d'une option
+    }
   }
 
   /*     * *************************Attributs****************************** */
@@ -390,6 +434,7 @@ class pluginsutiles extends eqLogic {
 
   // Fonction exécutée automatiquement avant la mise à jour de l'équipement
   public function preUpdate() {
+    $torefresh = false;
     $cfg_keywords = $this->getConfiguration('cfg_keywords', null);
     $cfg_keywords_prev = $this->getConfiguration('cfg_keywords_previous', null);
 
@@ -402,10 +447,18 @@ class pluginsutiles extends eqLogic {
     if ($cfg_keywords_prev != $cfg_keywords) {
       log::add(__CLASS__, 'info', 'Modification des mots clefs : >' . $cfg_keywords . '<');
       log::add(__CLASS__, 'info', 'Anciens mots clefs : >' . $cfg_keywords_prev . '<');
+      $torefresh = true;
+    }
 
+    if ($this->getChangesinOptions()) {
+      log::add(__CLASS__, 'info', 'Modification des options de recherche');
+      $torefresh = true;
+    }
+
+    if ($torefresh) {
       config::save('fullrefresh', 1, __CLASS__); // Passage à 1 du "fullrefesh" global suite au changement de la liste des mots clefs sur un équipement
 
-      $array_historique = array(array("date" => date("d/m/Y H:i"), "id" => '', "name" => 'Mise à jour des mots clefs')); // Utilisation de l'historique un peu adapté pour informer du changement de mots-clefs
+      $array_historique = array(array("date" => date("d/m/Y H:i"), "id" => '', "name" => 'Mise à jour des mots-clefs ou des options de recherche')); // Utilisation de l'historique un peu adapté pour informer du changement de mots-clefs
       $this->setConfiguration('cfg_keywords_previous', $cfg_keywords);
 
       // if keyword update, then refresh market check
@@ -415,7 +468,7 @@ class pluginsutiles extends eqLogic {
       $this->setConfiguration('array_historique', array_merge($array_historique, $info));
       $this->save(true);
     } else {
-      // log::add(__CLASS__, 'info', 'AUCUN chgt de keys');
+      // log::add(__CLASS__, 'info', 'AUCUN chgts');
     }
   }
 
