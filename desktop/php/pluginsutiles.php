@@ -282,12 +282,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<tr>
 										<th style="width: 70px;">{{Date}}</th>
 										<th style="width: 25px;">{{Id}}</th>
-										<th style="width: 200px;">{{Nom}}</th>
-										<th style="width: 100px;">{{Auteur}}</th>
-										<th style="width: 20px;"></th>
-										<th style="width: 20px;"></th>
-										<th style="width: 20px;"></th>
-										<th style="width: 20px;"></th>
+										<th style="width: 230px;">{{Nom}}</th>
+										<th style="width: 90px;">{{Auteur}}</th>
+										<th style="width: 15px;"></th>
+										<th style="width: 15px;"></th>
+										<th style="width: 15px;"></th>
+										<th style="width: 15px;"></th>
 									</tr>
 								</thead>
 								<tbody class="cmd_pluginsInfo">
