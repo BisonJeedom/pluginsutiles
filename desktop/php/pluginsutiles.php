@@ -179,6 +179,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 
+							<div class="form-group">
+								<label class="col-sm-5 control-label">{{Exclure les plugins privés}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkExcludePrivate">
+								</div>
+							</div>
+
 							<legend><i class="fas fa-dice"></i> {{Autres critères indépendants des mots-clefs}}</legend>
 
 							<div class="form-group">

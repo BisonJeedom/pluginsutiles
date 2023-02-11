@@ -148,6 +148,11 @@ class pluginsutiles extends eqLogic {
           continue;
         }
 
+        if ($this->getConfiguration('cfg_checkExcludePrivate', 0) && $private) {
+          // log::add(__CLASS__, 'warning', 'ask to exclude provate but private');
+          continue;
+        }
+
         if ($this->getConfiguration('checkName', 1) && self::arrayContainsWord($name, $keywords)) {
           // log::add(__CLASS__, 'warning', 'one key found in *NAME*');
           $pluginAvailable = true;
