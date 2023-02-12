@@ -110,9 +110,9 @@ function addHistory(_history) {
   // console.log("history =>", _history)
 
   if (_history.id != '') {
-    var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin">';
+    var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin">'; // Plugins
   } else {
-    var tr = '<tr>';
+    var tr = '<tr style="font-weight: bold;font-style: italic;">'; // Mise à jour des mots-clefs
   }
   tr += '<td><span class="pu_history" data-l1key="date"></span></td>';
   tr += '<td><span class="pu_history" data-l1key="id"></span></td>';
@@ -259,7 +259,27 @@ $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_notif]').on('change', f
   else {
     elt.hide();
   }
+});
 
+
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkStableOnly]').on('change', function () {
+  var elt = $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkBetaOnly]');
+  if ($(this).is(':checked')) {   
+    //elt.prop('checked', false);
+    elt.prop('disabled', 'disabled');
+  } else {
+    elt.prop('disabled', false);
+  }
+});
+
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkBetaOnly]').on('change', function () {
+  var elt = $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkStableOnly]');
+  if ($(this).is(':checked')) {   
+    //elt.prop('checked', false);
+    elt.prop('disabled', 'disabled');
+  } else {
+    elt.prop('disabled', false);
+  }
 });
 
 /* Fonction permettant l'affichage des commandes dans l'équipement */

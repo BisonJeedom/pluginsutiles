@@ -29,7 +29,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		<legend><i class="fas fa-table"></i> {{Mes équipements}}</legend>
 		<?php
 		if (count($eqLogics) == 0) {
-			echo '<br><div class="text-center" style="font-size:1.2em;font-weight:bold;">{{Aucun équipement Template trouvé, cliquer sur "Ajouter" pour commencer}}</div>';
+			echo '<br><div class="text-center" style="font-size:1.2em;font-weight:bold;">{{Aucun équipement trouvé, cliquer sur "Ajouter" pour commencer}}</div>';
 		} else {
 			// Champ de recherche
 			echo '<div class="input-group" style="margin:5px;">';
@@ -159,7 +159,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-5 control-label">{{Auteur}}</label>
+								<label class="col-sm-5 control-label">{{Auteur du plugin}}</label>
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="checkAutor">
 								</div>
@@ -176,6 +176,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								<label class="col-sm-5 control-label">{{Version beta uniquement}}</label>
 								<div class="col-sm-6">
 									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkBetaOnly">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-5 control-label">{{Exclure les plugins privés}}</label>
+								<div class="col-sm-6">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="cfg_checkExcludePrivate">
 								</div>
 							</div>
 
@@ -275,12 +282,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									<tr>
 										<th style="width: 70px;">{{Date}}</th>
 										<th style="width: 25px;">{{Id}}</th>
-										<th style="width: 200px;">{{Nom}}</th>
-										<th style="width: 100px;">{{Auteur}}</th>
-										<th style="width: 20px;"></th>
-										<th style="width: 20px;"></th>
-										<th style="width: 20px;"></th>
-										<th style="width: 20px;"></th>
+										<th style="width: 230px;">{{Nom}}</th>
+										<th style="width: 90px;">{{Auteur}}</th>
+										<th style="width: 15px;"></th>
+										<th style="width: 15px;"></th>
+										<th style="width: 15px;"></th>
+										<th style="width: 15px;"></th>
 									</tr>
 								</thead>
 								<tbody class="cmd_pluginsInfo">
