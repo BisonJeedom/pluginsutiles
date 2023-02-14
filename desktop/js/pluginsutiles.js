@@ -189,10 +189,25 @@ function printEqLogic(_eqLogic) {
       var myHistory = _eqLogic.configuration.array_historique;
       if (myHistory.length > 0) {
         myHistory.sort(function (a, b) {
-          if (new Date(a["date"]) == new Date(b["date"])) { //si meme date
-            return a["name"].localeCompare(b["name"]); //on trie par nom ///// a[1] - b[1]; // ==> on trie par ID
-          }
-          return new Date(b["date"]) - new Date(a["date"]); //sinon on trie par date
+          let a_day = a["date"].substring(0,2);
+          let a_month = a["date"].substring(3,5)-1;
+          let a_year = a["date"].substring(6,10);
+          let a_hour = a["date"].substring(11,13);
+          let a_minute = a["date"].substring(14,16);
+          let a_date = new Date(a_year, a_month, a_day, a_hour, a_minute, 0);
+
+          let b_day = b["date"].substring(0,2);
+          let b_month = b["date"].substring(3,5)-1;
+          let b_year = b["date"].substring(6,10);
+          let b_hour = b["date"].substring(11,13);
+          let b_minute = b["date"].substring(14,16);          
+          let b_date = new Date(b_year, b_month, b_day, b_hour, b_minute, 0);
+
+          if (a_date.getTime() === b_date.getTime()) { //si meme date
+              //return a["name"].localeCompare(b["name"]); // trie par nom
+              return b["id"] - a["id"]; // trie par ID en ordre inverse
+            }
+          return b_date - a_date; //sinon on trie par date    
         });
 
         for (var i in myHistory) {
