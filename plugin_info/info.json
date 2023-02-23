@@ -1,0 +1,33 @@
+{
+	"id": "pluginsutiles",
+	"name": "Plugins Utiles",
+	"description": {
+		"fr_FR": "Configurez des mots-clefs / centres d'intérêt et ce plugin vous permettra de rester informé lors de la sortie d'un plugin correspondant à vos attentes"
+	},
+	"licence": "AGPL",
+	"author": "Bison",
+	"require": "4.1.20",
+	"category": "organization",
+	"hasDependency": false,
+	"hasOwnDeamon": false,
+	"maxDependancyInstallTime": 0,
+	"changelog": "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/changelog_stable.md",
+	"documentation": "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/index_stable.md",
+	"changelog_beta": "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/changelog_beta.md",
+	"documentation_beta": "https://github.com/BisonJeedom/documentations/blob/main/pluginsutiles/index_beta.md",
+	"link": {
+		"forum": "",
+		"video": ""
+	},
+	"language": [
+		"fr_FR"
+	],
+	"compatibility": [
+		"smart",
+		"rpi",
+		"docker",
+		"diy",
+		"v4",
+		"atlas"
+	]
+}
