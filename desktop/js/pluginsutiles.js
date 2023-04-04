@@ -13,6 +13,22 @@
 * You should have received a copy of the GNU General Public License
 * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
 */
+
+function RequiredJeedomVersion(requiredVersion) {
+  if (jeeFrontEnd.jeedomVersion !== 'undefined') {
+    jeedomVersion = jeeFrontEnd.jeedomVersion;
+    jeedomVersion = jeedomVersion.replace('.', '');
+    requiredVersion = requiredVersion.replace('.', '');
+    if (jeedomVersion >= requiredVersion) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
 $("#table_cmd").sortable({ axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true });
 
 $("#div_action_notif").sortable({ axis: "y", cursor: "move", items: ".action_notif", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true });
@@ -35,7 +51,11 @@ $("body").off('click', '.listCmdAction').on('click', '.listCmdAction', function 
     el.value(result.human);
     jeedom.cmd.displayActionOption(el.value(), '', function (html) {
       el.closest('.' + type).find('.actionOptions').html(html);
-      taAutosize();
+      if (RequiredJeedomVersion('4.1.20')) {
+        jeedomUtils.taAutosize();
+      } else {
+        taAutosize();
+      }      
     });
   });
 });
@@ -48,7 +68,11 @@ $("body").undelegate(".listAction", 'click').delegate(".listAction", 'click', fu
     el.value(result.human);
     jeedom.cmd.displayActionOption(el.value(), '', function (html) {
       el.closest('.' + type).find('.actionOptions').html(html);
-      taAutosize();
+      if (RequiredJeedomVersion('4.1.20')) {
+        jeedomUtils.taAutosize();
+      } else {
+        taAutosize();
+      }  
     });
   });
 });
@@ -243,8 +267,12 @@ function printEqLogic(_eqLogic) {
         success: function (data) {
           for (var i in data) {
             $('#' + data[i].id).append(data[i].html.html);
-          }
-          taAutosize();
+          }          
+          if (RequiredJeedomVersion('4.1.20')) {
+            jeedomUtils.taAutosize();
+          } else {
+            taAutosize();
+          }  
         }
       });
     }
