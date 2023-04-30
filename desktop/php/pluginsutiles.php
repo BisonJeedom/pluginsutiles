@@ -262,6 +262,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 													<li>#name# -> nom du plugin</li>
 													<li>#author# -> auteur du plugin</li>
 													<li>#cost# -> coût du plugin</li>
+													<li>#certification# -> certification du plugin</li>
 													<li>#msg# -> message standard envoyé</li>
 												</ul>
 											</span>

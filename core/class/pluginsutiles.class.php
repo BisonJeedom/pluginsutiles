@@ -202,7 +202,7 @@ class pluginsutiles extends eqLogic {
       }
 
       if ($certification != '') {
-        $certification_log = '['.$certification.'] ';          
+        $certification_log = '[' . $certification . '] ';
       } else {
         $certification_log = '';
       }
@@ -238,7 +238,7 @@ class pluginsutiles extends eqLogic {
           $array_IdAlreadyFound[$id] = array("private" => $private, "beta" => $beta, "stable" => $stable, "realcost" => $realcost, "certification" => $certification); // Ajout de l'id du plugin trouvé et signalé
           $array_historique[] = $item_detail;
 
-          $msg = 'Plugin '.$certification.' disponible correspondant aux critères : ' . $name . ' par ' . $author . $msg_version . '(' . $cost_txt . ')';
+          $msg = 'Plugin ' . $certification . ' disponible correspondant aux critères : ' . $name . ' par ' . $author . $msg_version . '(' . $cost_txt . ')';
           if ($cfg_messagecenter == 1) {
             log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
             message::add(__CLASS__, $msg);
@@ -301,8 +301,8 @@ class pluginsutiles extends eqLogic {
   }
 
   public function replaceCustomData(string $data, array $plugin = array()) {
-    $arrResearch = array('#eqId#', '#eqName#', '#msg#', '#author#', '#name#', '#cost#');
-    $arrReplace = array($this->getId(), $this->getName(), $plugin['defaultMsg'], $plugin['author'], $plugin['name'], $plugin['cost']);
+    $arrResearch = array('#eqId#', '#eqName#', '#msg#', '#author#', '#name#', '#cost#', '#certification#');
+    $arrReplace = array($this->getId(), $this->getName(), $plugin['defaultMsg'], $plugin['author'], $plugin['name'], $plugin['cost'], $plugin['certification']);
 
     return str_replace($arrResearch, $arrReplace, $data);
   }
