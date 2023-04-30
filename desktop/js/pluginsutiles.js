@@ -138,10 +138,29 @@ function addHistory(_history) {
   } else {
     var tr = '<tr style="font-weight: bold;font-style: italic;">'; // Mise à jour des mots-clefs
   }
+   
   tr += '<td><span class="pu_history" data-l1key="date"></span></td>';
   tr += '<td><span class="pu_history" data-l1key="id"></span></td>';
-  tr += '<td><span class="pu_history" data-l1key="name"></span>';
-  tr += '<td><span class="pu_history" data-l1key="author"></span></td>';
+  tr += '<td><span class="pu_history" data-l1key="name"></span>' ;
+
+  // add Certification
+  if (_history.certification == 'Officiel') {
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Officiel.png"></span>' ;
+  }
+  if (_history.certification == 'Conseillé') {
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Conseille.png"></span>' ;
+  }
+  if (_history.certification == 'Premium') {
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Premium.png"></span>' ;
+  }
+  if (_history.certification == 'Partenaire') {
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Partenaire.png"></span>' ;
+  }
+  if (_history.certification == 'Legacy') {
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Legacy.png"></span>' ;
+  }
+  
+  tr += '</td><td><span class="pu_history" data-l1key="author"></span></td>';
 
   // version
   tr += '<td>';
