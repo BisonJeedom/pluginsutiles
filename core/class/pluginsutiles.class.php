@@ -129,6 +129,7 @@ class pluginsutiles extends eqLogic {
       $beta = ($plugin['status']['beta'] ?? '' == "1") ?? false;
       $stable = ($plugin['status']['stable'] ?? '' == "1") ?? false;
       $private = $plugin['private'] == "1";
+      $certification = $plugin['certification'];
 
       if ($cost == 0) {
         $cost_txt = 'Gratuit';
@@ -189,7 +190,8 @@ class pluginsutiles extends eqLogic {
         "id" => $id, "name" => $name,
         "author" => $author, "private" => $private,
         "beta" => $beta, "stable" => $stable,
-        "cost" => $cost, "realcost" => $realcost
+        "cost" => $cost, "realcost" => $realcost,
+        "certification" => $certification
       ); // Ajout dans l'historique
 
 
@@ -197,6 +199,12 @@ class pluginsutiles extends eqLogic {
         log::add(__CLASS__, 'info', 'Plugin en promo :' . $name);
         $array_IdAlreadyFound[$id] = array("private" => $private, "beta" => $beta, "stable" => $stable, "realcost" => $realcost); // Ajout de l'id du plugin trouvé et signalé
         $array_historique[] = array_merge($item_detail, array("discount" => true));
+      }
+
+      if ($certification != '') {
+        $certification_log = '[' . $certification . '] ';
+      } else {
+        $certification_log = '';
       }
 
       if ($pluginAvailable) {
@@ -222,15 +230,15 @@ class pluginsutiles extends eqLogic {
           $msg_version = '';
         }
 
-        log::add(__CLASS__, 'info', '-> [' . $new . '] ' . $name . ' par ' . $author . $msg_version . '(' . $cost_txt . ')');
+        log::add(__CLASS__, 'info', '-> [' . $new . '] ' . $certification_log . $name . ' par ' . $author . $msg_version . '(' . $cost_txt . ')');
         log::add(__CLASS__, 'info', '-> [' . $new . '] description : ' . $description);
         log::add(__CLASS__, 'info', '-> [' . $new . '] utilisation : ' . $utilisation);
 
         if ($new == 'Nouveau') {
-          $array_IdAlreadyFound[$id] = array("private" => $private, "beta" => $beta, "stable" => $stable, "realcost" => $realcost); // Ajout de l'id du plugin trouvé et signalé
+          $array_IdAlreadyFound[$id] = array("private" => $private, "beta" => $beta, "stable" => $stable, "realcost" => $realcost, "certification" => $certification); // Ajout de l'id du plugin trouvé et signalé
           $array_historique[] = $item_detail;
 
-          $msg = 'Plugin disponible correspondant aux critères : ' . $name . ' par ' . $author . $msg_version . '(' . $cost_txt . ')';
+          $msg = 'Plugin ' . $certification . ' disponible correspondant aux critères : ' . $name . ' par ' . $author . $msg_version . '(' . $cost_txt . ')';
           if ($cfg_messagecenter == 1) {
             log::add(__CLASS__, 'info', '-> Envoi dans le centre de message');
             message::add(__CLASS__, $msg);
@@ -256,7 +264,7 @@ class pluginsutiles extends eqLogic {
           }
         }
       } else {
-        log::add(__CLASS__, 'debug', $name . ' par ' . $author . ' (' . $cost_txt . ')');
+        log::add(__CLASS__, 'debug', $certification_log . $name . ' par ' . $author . ' (' . $cost_txt . ')');
         log::add(__CLASS__, 'debug', 'description : ' . $description);
         log::add(__CLASS__, 'debug', 'utilisation : ' . $utilisation);
       }
@@ -293,8 +301,8 @@ class pluginsutiles extends eqLogic {
   }
 
   public function replaceCustomData(string $data, array $plugin = array()) {
-    $arrResearch = array('#eqId#', '#eqName#', '#msg#', '#author#', '#name#', '#cost#');
-    $arrReplace = array($this->getId(), $this->getName(), $plugin['defaultMsg'], $plugin['author'], $plugin['name'], $plugin['cost']);
+    $arrResearch = array('#eqId#', '#eqName#', '#msg#', '#author#', '#name#', '#cost#', '#certification#');
+    $arrReplace = array($this->getId(), $this->getName(), $plugin['defaultMsg'], $plugin['author'], $plugin['name'], $plugin['cost'], $plugin['certification']);
 
     return str_replace($arrResearch, $arrReplace, $data);
   }

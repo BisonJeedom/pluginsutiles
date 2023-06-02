@@ -13,6 +13,22 @@
 * You should have received a copy of the GNU General Public License
 * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
 */
+
+function RequiredJeedomVersion(requiredVersion) {
+  if (jeeFrontEnd.jeedomVersion !== 'undefined') {
+    jeedomVersion = jeeFrontEnd.jeedomVersion;
+    jeedomVersion = jeedomVersion.replace('.', '');
+    requiredVersion = requiredVersion.replace('.', '');
+    if (jeedomVersion >= requiredVersion) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
 $("#table_cmd").sortable({ axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true });
 
 $("#div_action_notif").sortable({ axis: "y", cursor: "move", items: ".action_notif", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true });
@@ -35,7 +51,11 @@ $("body").off('click', '.listCmdAction').on('click', '.listCmdAction', function 
     el.value(result.human);
     jeedom.cmd.displayActionOption(el.value(), '', function (html) {
       el.closest('.' + type).find('.actionOptions').html(html);
-      taAutosize();
+      if (RequiredJeedomVersion('4.1.20')) {
+        jeedomUtils.taAutosize();
+      } else {
+        taAutosize();
+      }      
     });
   });
 });
@@ -48,7 +68,11 @@ $("body").undelegate(".listAction", 'click').delegate(".listAction", 'click', fu
     el.value(result.human);
     jeedom.cmd.displayActionOption(el.value(), '', function (html) {
       el.closest('.' + type).find('.actionOptions').html(html);
-      taAutosize();
+      if (RequiredJeedomVersion('4.1.20')) {
+        jeedomUtils.taAutosize();
+      } else {
+        taAutosize();
+      }  
     });
   });
 });
@@ -114,10 +138,29 @@ function addHistory(_history) {
   } else {
     var tr = '<tr style="font-weight: bold;font-style: italic;">'; // Mise à jour des mots-clefs
   }
+   
   tr += '<td><span class="pu_history" data-l1key="date"></span></td>';
   tr += '<td><span class="pu_history" data-l1key="id"></span></td>';
-  tr += '<td><span class="pu_history" data-l1key="name"></span>';
-  tr += '<td><span class="pu_history" data-l1key="author"></span></td>';
+  tr += '<td><span class="pu_history" data-l1key="name"></span>' ;
+
+  // add Certification
+  if (_history.certification == 'Officiel') {
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Officiel.png"></span>' ;
+  }
+  if (_history.certification == 'Conseillé') {
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Conseille.png"></span>' ;
+  }
+  if (_history.certification == 'Premium') {
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Premium.png"></span>' ;
+  }
+  if (_history.certification == 'Partenaire') {
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Partenaire.png"></span>' ;
+  }
+  if (_history.certification == 'Legacy') {
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Legacy.png"></span>' ;
+  }
+  
+  tr += '</td><td><span class="pu_history" data-l1key="author"></span></td>';
 
   // version
   tr += '<td>';
@@ -243,8 +286,12 @@ function printEqLogic(_eqLogic) {
         success: function (data) {
           for (var i in data) {
             $('#' + data[i].id).append(data[i].html.html);
-          }
-          taAutosize();
+          }          
+          if (RequiredJeedomVersion('4.1.20')) {
+            jeedomUtils.taAutosize();
+          } else {
+            taAutosize();
+          }  
         }
       });
     }
