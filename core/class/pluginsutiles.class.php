@@ -55,7 +55,7 @@ class pluginsutiles extends eqLogic {
   }
 
 
-  public function refreshMarket() {
+  public static function refreshMarket() {
     $fullrefresh = config::byKey('fullrefresh', __CLASS__);
     if ($fullrefresh == 1) { // Les mots-clefs d'au moins un des équipements a été modifié
       $timeState = null;
@@ -287,7 +287,7 @@ class pluginsutiles extends eqLogic {
     return $array_historique;
   }
 
-  public function refreshPluginsFromMarket() {
+  public static function refreshPluginsFromMarket() {
     $markets = pluginsutiles::refreshMarket();
     /** @var pluginsutiles $eqLogic */
     foreach (eqLogic::byType('pluginsutiles') as $eqLogic) {
