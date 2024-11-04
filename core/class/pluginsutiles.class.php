@@ -187,10 +187,14 @@ class pluginsutiles extends eqLogic {
 
       $item_detail = array(
         "date" => date("d/m/Y H:i"),
-        "id" => $id, "name" => $name,
-        "author" => $author, "private" => $private,
-        "beta" => $beta, "stable" => $stable,
-        "cost" => $cost, "realcost" => $realcost,
+        "id" => $id,
+        "name" => $name,
+        "author" => $author,
+        "private" => $private,
+        "beta" => $beta,
+        "stable" => $stable,
+        "cost" => $cost,
+        "realcost" => $realcost,
         "certification" => $certification
       ); // Ajout dans l'historique
 
@@ -208,10 +212,10 @@ class pluginsutiles extends eqLogic {
       }
 
       if ($pluginAvailable) {
-        $nb_found++;
         log::add(__CLASS__, 'info', 'Plugin correspondant aux critères :');
 
         if (!array_key_exists($id, $array_IdAlreadyFound)) {
+          $nb_found++;
           $new = 'Nouveau'; // id non trouvé dans le tableau
         } else {
           if ($this->getConfiguration('cfg_checkChanges', 0)) {
@@ -283,7 +287,7 @@ class pluginsutiles extends eqLogic {
       config::save('fullrefresh', 0, __CLASS__);
     }
 
-    log::add(__CLASS__, 'info', 'Recherche terminée parmi ' . $nb_plugins . ' plugins : ' . $nb_found . ' nouveaux plugins trouvé(s) et correspondant aux critères');
+    log::add(__CLASS__, 'info', 'Recherche terminée parmi ' . $nb_plugins . ' plugins : ' . $nb_found . ' nouveau(x) plugins trouvé(s) et correspondant aux critères');
     return $array_historique;
   }
 
