@@ -292,6 +292,10 @@ class pluginsutiles extends eqLogic {
   }
 
   public static function refreshPluginsFromMarket() {
+    if (date('N') == 1) { // Force fullrefresh toutes les semaines [1:lundi ... 7:dimanche]
+      log::add(__CLASS__, 'debug', '** force du fullrefresh une fois par semaine **');
+      config::save('fullrefresh', 1, __CLASS__);
+    }
     $markets = pluginsutiles::refreshMarket();
     /** @var pluginsutiles $eqLogic */
     foreach (eqLogic::byType('pluginsutiles') as $eqLogic) {
