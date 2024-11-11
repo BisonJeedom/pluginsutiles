@@ -55,7 +55,7 @@ $("body").off('click', '.listCmdAction').on('click', '.listCmdAction', function 
         jeedomUtils.taAutosize();
       } else {
         taAutosize();
-      }      
+      }
     });
   });
 });
@@ -72,7 +72,7 @@ $("body").undelegate(".listAction", 'click').delegate(".listAction", 'click', fu
         jeedomUtils.taAutosize();
       } else {
         taAutosize();
-      }  
+      }
     });
   });
 });
@@ -130,44 +130,53 @@ function addAction(_action, _type) {
   $('#div_' + _type + ' .' + _type + '').last().setValues(_action, '.expressionAttr');
 }
 
-function addHistory(_history) {
+function addHistory(_history, _keyword) {
   // console.log("history =>", _history)
 
   if (_history.id != '') {
-    var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin">'; // Plugins
+    if (_keyword[_history.id] != undefined) {
+      var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin" title="Mot clef : ' + _keyword[_history.id] + '">'; // Plugins
+      //console.log("id -> keyword =>", id_plugin + ' -> ' + _keyword[_history.id])
+    } else {
+      var tr = '<tr class="market cursor install" data-market_id="' + _history.id + '" data-market_type="plugin">';
+    }
   } else {
     var tr = '<tr style="font-weight: bold;font-style: italic;">'; // Mise à jour des mots-clefs
   }
-   
+
+
   tr += '<td><span class="pu_history" data-l1key="date"></span></td>';
   tr += '<td><span class="pu_history" data-l1key="id"></span></td>';
-  tr += '<td><span class="pu_history" data-l1key="name"></span>' ;
+  tr += '<td><span class="pu_history" data-l1key="name"></span>';
+
 
   // add Certification
   if (_history.certification == 'Officiel') {
-    tr += '<span class="headband"><img src="core/img/pluginBands/band_Officiel.png"></span>' ;
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Officiel.png"></span>';
   }
   if (_history.certification == 'Conseillé') {
-    tr += '<span class="headband"><img src="core/img/pluginBands/band_Conseille.png"></span>' ;
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Conseille.png"></span>';
   }
   if (_history.certification == 'Premium') {
-    tr += '<span class="headband"><img src="core/img/pluginBands/band_Premium.png"></span>' ;
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Premium.png"></span>';
   }
   if (_history.certification == 'Partenaire') {
-    tr += '<span class="headband"><img src="core/img/pluginBands/band_Partenaire.png"></span>' ;
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Partenaire.png"></span>';
   }
   if (_history.certification == 'Legacy') {
-    tr += '<span class="headband"><img src="core/img/pluginBands/band_Legacy.png"></span>' ;
+    tr += '<span class="headband"><img src="core/img/pluginBands/band_Legacy.png"></span>';
   }
-  
+
   tr += '</td><td><span class="pu_history" data-l1key="author"></span></td>';
 
   // version
   tr += '<td>';
   if (_history.id != '') {
-    color = (_history.stable) ? 'success' : 'warning';
+    color = (_history.stable) ? 'green' : 'red';
     title = (_history.stable) ? 'stable' : 'beta';
-    tr += '<span><sub style="font-size:40px" class="' + color + '" title="plugin en version ' + title + '">&#8226</sub></span>';
+    //tr += '<span><sub style="font-size:40px" class="' + color + '" title="plugin en version ' + title + '">&#8226</sub></span>';
+    //tr += '<span style="font-size:40px" class="' + color + '" title="plugin en version ' + title + '">&#8226</span>';
+    tr += '<i class="icon fas fa-circle icon_' + color + '" title="plugin en version ' + title + '"</i>';
   }
   tr += '</td>';
 
@@ -232,29 +241,35 @@ function printEqLogic(_eqLogic) {
       var myHistory = _eqLogic.configuration.array_historique;
       if (myHistory.length > 0) {
         myHistory.sort(function (a, b) {
-          let a_day = a["date"].substring(0,2);
-          let a_month = a["date"].substring(3,5)-1;
-          let a_year = a["date"].substring(6,10);
-          let a_hour = a["date"].substring(11,13);
-          let a_minute = a["date"].substring(14,16);
+          let a_day = a["date"].substring(0, 2);
+          let a_month = a["date"].substring(3, 5) - 1;
+          let a_year = a["date"].substring(6, 10);
+          let a_hour = a["date"].substring(11, 13);
+          let a_minute = a["date"].substring(14, 16);
           let a_date = new Date(a_year, a_month, a_day, a_hour, a_minute, 0);
 
-          let b_day = b["date"].substring(0,2);
-          let b_month = b["date"].substring(3,5)-1;
-          let b_year = b["date"].substring(6,10);
-          let b_hour = b["date"].substring(11,13);
-          let b_minute = b["date"].substring(14,16);          
+          let b_day = b["date"].substring(0, 2);
+          let b_month = b["date"].substring(3, 5) - 1;
+          let b_year = b["date"].substring(6, 10);
+          let b_hour = b["date"].substring(11, 13);
+          let b_minute = b["date"].substring(14, 16);
           let b_date = new Date(b_year, b_month, b_day, b_hour, b_minute, 0);
 
           if (a_date.getTime() === b_date.getTime()) { //si meme date
-              //return a["name"].localeCompare(b["name"]); // trie par nom
-              return b["id"] - a["id"]; // trie par ID en ordre inverse
-            }
+            //return a["name"].localeCompare(b["name"]); // trie par nom
+            return b["id"] - a["id"]; // trie par ID en ordre inverse
+          }
           return b_date - a_date; //sinon on trie par date    
         });
 
+        if (isset(_eqLogic.configuration.array_keywords_match_plugins)) {
+          var myKeywords = _eqLogic.configuration.array_keywords_match_plugins;
+        } else {
+          var myKeywords = []
+        }
+
         for (var i in myHistory) {
-          addHistory(myHistory[i]);
+          addHistory(myHistory[i], myKeywords);
         }
       }
     }
@@ -286,12 +301,12 @@ function printEqLogic(_eqLogic) {
         success: function (data) {
           for (var i in data) {
             $('#' + data[i].id).append(data[i].html.html);
-          }          
+          }
           if (RequiredJeedomVersion('4.1.20')) {
             jeedomUtils.taAutosize();
           } else {
             taAutosize();
-          }  
+          }
         }
       });
     }
@@ -326,7 +341,7 @@ $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_notif]').on('change', f
 
 $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkStableOnly]').on('change', function () {
   var elt = $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkBetaOnly]');
-  if ($(this).is(':checked')) {   
+  if ($(this).is(':checked')) {
     //elt.prop('checked', false);
     elt.prop('disabled', 'disabled');
   } else {
@@ -336,7 +351,7 @@ $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkStableOnly]').on('
 
 $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkBetaOnly]').on('change', function () {
   var elt = $('.eqLogicAttr[data-l1key=configuration][data-l2key=cfg_checkStableOnly]');
-  if ($(this).is(':checked')) {   
+  if ($(this).is(':checked')) {
     //elt.prop('checked', false);
     elt.prop('disabled', 'disabled');
   } else {
