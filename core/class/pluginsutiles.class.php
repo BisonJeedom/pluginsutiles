@@ -21,15 +21,36 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
 class pluginsutiles extends eqLogic {
 
 
-  public function arrayContainsWord($str, array $arr) {
-    foreach ($arr as $word) {
+  public function arrayContainsWord($_id, $_str, array $_arr) {
+    $array_keywords_match_plugins = (array) $this->getConfiguration("array_keywords_match_plugins", "");
+    //log::add('pluginsutiles', 'debug', 'keywords_match_plugins start : ' . $keywords_match_plugins);
+    $match = 0;
+    foreach ($_arr as $word) {
       // Works in Hebrew and any other unicode characters
       // Thanks https://medium.com/@shiba1014/regex-word-boundaries-with-unicode-207794f6e7ed
       // Thanks https://www.phpliveregex.com/
       // Add casse-insensible - Bison
-      if (preg_match('/(?i)(?<=[\s,.:;"\']|^)' . $word . '(?=[\s,.:;"\']|$)/', $str)) return true;
+      if (preg_match('/(?i)(?<=[\s,.:;"\']|^)' . $word . '(?=[\s,.:;"\']|$)/', $_str)) {
+        log::add(__CLASS__, 'debug', '/arrayContainsWord : ' . $word .  ' match sur ' . $_str);
+        if (!is_array($array_keywords_match_plugins[$_id])) {
+          $array_keywords_match_plugins[$_id] = array();
+        }
+        if (!in_array($word, $array_keywords_match_plugins[$_id])) {
+          $array_keywords_match_plugins[$_id][] = $word;
+        }
+        $match = 1;
+      }
     }
-    return false;
+    //log::add('pluginsutiles', 'debug', 'end foreach');
+    //$keywords_match_plugins = json_encode($array_keywords_match_plugins);
+    log::add('pluginsutiles', 'debug', 'array_keywords_match_plugins end : ' . json_encode($array_keywords_match_plugins));
+    $this->setConfiguration("array_keywords_match_plugins", $array_keywords_match_plugins);
+    $this->save();
+    if ($match) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public function cleanKeyWords(array $arr) {
@@ -115,7 +136,7 @@ class pluginsutiles extends eqLogic {
     $nb_plugins = 0;
 
     foreach ($_markets as $plugin) {
-      // log::add(__CLASS__, 'debug', 'receive plugin =>' . json_encode($plugin));
+      //log::add(__CLASS__, 'debug', 'receive plugin =>' . json_encode($plugin));
       $nb_plugins++;
       $error = 0;
 
@@ -154,22 +175,22 @@ class pluginsutiles extends eqLogic {
           continue;
         }
 
-        if ($this->getConfiguration('checkName', 1) && self::arrayContainsWord($name, $keywords)) {
+        if ($this->getConfiguration('checkName', 1) && $this->arrayContainsWord($id, $name, $keywords)) {
           // log::add(__CLASS__, 'warning', 'one key found in *NAME*');
           $pluginAvailable = true;
         }
 
-        if ($this->getConfiguration('checkDescription', 1) && self::arrayContainsWord($description, $keywords)) {
+        if ($this->getConfiguration('checkDescription', 1) && $this->arrayContainsWord($id, $description, $keywords)) {
           // log::add(__CLASS__, 'warning', 'one key found in *DESC*');
           $pluginAvailable = true;
         }
 
-        if ($this->getConfiguration('checkUtilisation', 0) && self::arrayContainsWord($utilisation, $keywords)) {
+        if ($this->getConfiguration('checkUtilisation', 0) && $this->arrayContainsWord($id, $utilisation, $keywords)) {
           // log::add(__CLASS__, 'warning', 'one key found in *UTILISATION*');
           $pluginAvailable = true;
         }
 
-        if ($this->getConfiguration('checkAutor', 0) && self::arrayContainsWord($author, $keywords)) {
+        if ($this->getConfiguration('checkAutor', 0) && $this->arrayContainsWord($id, $author, $keywords)) {
           // log::add(__CLASS__, 'warning', 'one key found in *AUTHOR*');
           $pluginAvailable = true;
         }
@@ -185,12 +206,18 @@ class pluginsutiles extends eqLogic {
         }
       }
 
+      log::add('pluginsutiles', 'debug', 'keywords_match_plugins : ' . json_encode($this->getConfiguration("array_keywords_match_plugins", "")));
+
       $item_detail = array(
         "date" => date("d/m/Y H:i"),
-        "id" => $id, "name" => $name,
-        "author" => $author, "private" => $private,
-        "beta" => $beta, "stable" => $stable,
-        "cost" => $cost, "realcost" => $realcost,
+        "id" => $id,
+        "name" => $name,
+        "author" => $author,
+        "private" => $private,
+        "beta" => $beta,
+        "stable" => $stable,
+        "cost" => $cost,
+        "realcost" => $realcost,
         "certification" => $certification
       ); // Ajout dans l'historique
 
@@ -208,10 +235,10 @@ class pluginsutiles extends eqLogic {
       }
 
       if ($pluginAvailable) {
-        $nb_found++;
         log::add(__CLASS__, 'info', 'Plugin correspondant aux critères :');
 
         if (!array_key_exists($id, $array_IdAlreadyFound)) {
+          $nb_found++;
           $new = 'Nouveau'; // id non trouvé dans le tableau
         } else {
           if ($this->getConfiguration('cfg_checkChanges', 0)) {
@@ -283,11 +310,15 @@ class pluginsutiles extends eqLogic {
       config::save('fullrefresh', 0, __CLASS__);
     }
 
-    log::add(__CLASS__, 'info', 'Recherche terminée parmi ' . $nb_plugins . ' plugins : ' . $nb_found . ' nouveaux plugins trouvé(s) et correspondant aux critères');
+    log::add(__CLASS__, 'info', 'Recherche terminée parmi ' . $nb_plugins . ' plugins : ' . $nb_found . ' nouveau(x) plugins trouvé(s) et correspondant aux critères');
     return $array_historique;
   }
 
   public static function refreshPluginsFromMarket() {
+    if (date('N') == 1) { // Force fullrefresh toutes les semaines [1:lundi ... 7:dimanche]
+      log::add(__CLASS__, 'info', '** Fullrefresh de la semaine **');
+      config::save('fullrefresh', 1, __CLASS__);
+    }
     $markets = pluginsutiles::refreshMarket();
     /** @var pluginsutiles $eqLogic */
     foreach (eqLogic::byType('pluginsutiles') as $eqLogic) {
@@ -577,9 +608,13 @@ class pluginsutilesCmd extends cmd {
     $eqlogic = $this->getEqLogic();
     switch ($this->getLogicalId()) {
       case 'refresh':
+        log::add('pluginsutiles', 'debug', 'refresh');
+        //$eqlogic->setConfiguration("array_keywords_match_plugins", "");
+        //$eqlogic->save();
+        //break;
         $markets = $eqlogic->refreshMarket();
         $info = $eqlogic->search($markets);
-        log::add('pluginustiles', 'debug', 'setConf array_historique data ==> ' . json_encode($info));
+        log::add('pluginsutiles', 'debug', 'setConf array_historique data ==> ' . json_encode($info));
         $eqlogic->setConfiguration('array_historique', $info);
         $eqlogic->save(true);
         break;
